@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="divLogin">
+		<h2 align="center">Benvenuto nella galleria immagini</h2>
+		<h4 align="center">Inserisci le credenziali per accedere</h4>
+		<form action="CheckLogin" method="POST">
+			<table class=loginTable>
+				<tr>
+					<td><input type="text" name="username" placeholder="username" required th:value=" ${usernameInserito}"></td>
+				</tr>
+				<tr>
+					<td><input type="password" name="password" placeholder="password" required></td>
+				</tr>
+				<tr>			
+					<td colspan="2" th:text=" ${errorMsg}"> </td>
+				</tr>
+				<tr>			
+					<td colspan="2"><input type="submit" value="Login"></td>
+				</tr>		
+			</table><br>
+		</form>
+	</div>
+
+    <div class="divRegister">
+        <h4 align="center">Qui puoi registrarti per accedere</h4>
+        <form action="CheckRegister" method="POST">
+			<table class=registerTable>
+				<tr>
+					<td><input type="email" name="email" placeholder="email" required th:value=" ${emailInserita}"></td>
+				</tr>
+                <tr>
+					<td><input type="text" name="username" placeholder="username" required th:value=" ${usernamelInserito}"></td>
+				</tr>
+				<tr>
+					<td><input type="password" name="password" placeholder="password" required></td>
+				</tr>
+                <tr>
+					<td><input type="password" name="passwordRepeated" placeholder="ripeti password" required></td>
+				</tr>
+				<tr>			
+					<td colspan="2" th:text=" ${errorMsg}"> </td>
+				</tr>
+				<tr>			
+					<td colspan="2"><input type="submit" value="Register"></td>
+				</tr>		
+			</table><br>
+		</form>
+    </div>
+</body>
+</html>

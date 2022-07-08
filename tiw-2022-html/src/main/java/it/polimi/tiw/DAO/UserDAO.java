@@ -14,10 +14,10 @@ public class UserDAO {
 		this.connection = connection;
 	}
 
-	public User checkCredentials(String email, String password) throws SQLException {
+	public User checkCredentials(String username, String password) throws SQLException {
 		String query = "SELECT * FROM utente u join indirizzo ind on ind.Id=u.IdIndirizzo WHERE email = ? AND password =?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, email);
+			pstatement.setString(1, username);
 			pstatement.setString(2, password);
 			try (ResultSet result = pstatement.executeQuery();) {
 				if (!result.isBeforeFirst()) // no results, credential check failed
@@ -30,5 +30,9 @@ public class UserDAO {
 				}
 			}
 		}
+	}
+	
+	public boolean checkCredentialsRegistration(String email, String username, String password, String passwordRepeated) throws SQLException {
+		return false;
 	}
 }

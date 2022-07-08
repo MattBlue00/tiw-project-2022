@@ -51,9 +51,9 @@ public class CheckLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String email = request.getParameter("email");
+		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
+		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
 			return;
 		}
@@ -61,7 +61,7 @@ public class CheckLogin extends HttpServlet {
 		UserDAO userDao = new UserDAO(connection);
 		User user = null;
 		try {
-			user = userDao.checkCredentials(email, password);
+			user = userDao.checkCredentials(username, password);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.");
 			return;
@@ -71,13 +71,12 @@ public class CheckLogin extends HttpServlet {
 		if (user == null) {
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
-			ctx.setVariable("errorMsg", "Email o password errata");
-			path = "/login.html";
+			ctx.setVariable("usernameInserito", username != null || !username.isEmpty() ? username : "");
+			ctx.setVariable("errorMsg", "Username o password errata");
+			path = "/index.html";
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
 			request.getSession().setAttribute("utente", user);
-			request.getSession().setAttribute("listaVisualizzati", null);
 			path = getServletContext().getContextPath() + "/VisualizzaHome";
 			response.sendRedirect(path);
 		}
