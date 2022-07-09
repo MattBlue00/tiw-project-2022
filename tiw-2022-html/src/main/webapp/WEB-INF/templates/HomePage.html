@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Home</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+<h1>Visualizza i tuoi album</h1>
+	<div>
+		<table class="albumList">
+		<tr th:each="a : ${userAlbums}">
+			<td class="album">
+				<a th:href="@{/GoToAlbum(owner=${a.owner}, title=${a.title})">
+					<img th:src="@{'data:image/jpg;base64,'+${paimmagine}}" th:alt="${a.nome}" class="immagineGrande" />
+				</a>
+			</td>
+		</tr>
+	</table>
+	</div>
+</body>
+</html>
