@@ -60,27 +60,33 @@ public class CheckRegister extends HttpServlet{
 		}
 		
 		UserDAO userDao = new UserDAO(connection);
-		boolean registrationDone = false;
+		boolean checkCredentialsDone = false;
 		try {
-			registrationDone = userDao.checkCredentialsRegistration(email, username, password, passwordRepeated);
+			checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
+			if(checkCredentialsDone && password.equals(passwordRepeated)) {
+				userDao.registerUser(username, email, password);
+			}
+			else {
+				if(!checkCredentialsDone && password.equals(passwordRepeated)) {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Registrazione fallita.\nUsername o email già in uso.");
+				}
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Registrazione fallita.\nLe password inserite non sono uguali.");
+				}
+			}
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali");
 			return;
 		}
 		
 		String path;
-		/* if (user == null) {
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
-			ctx.setVariable("errorMsg", "Email o password errata");
-			path = "/index.html";
-			templateEngine.process(path, ctx, response.getWriter());
-		} else {
-			request.getSession().setAttribute("utente", user);
-			path = getServletContext().getContextPath() + "/VisualizzaHome";
-			response.sendRedirect(path);
-		} */
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
+		ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
+		ctx.setVariable("errorMsg", "Email o password errata");
+		path = "/index.html";
+		templateEngine.process(path, ctx, response.getWriter());
 	}
 	
 	public void destroy() {
