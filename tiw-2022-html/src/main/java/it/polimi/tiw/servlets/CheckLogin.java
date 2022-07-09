@@ -1,12 +1,10 @@
 package it.polimi.tiw.servlets;
 
 import java.io.IOException;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +75,7 @@ public class CheckLogin extends HttpServlet {
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
 			request.getSession().setAttribute("utente", user);
-			path = getServletContext().getContextPath() + "/VisualizzaHome";
+			path = getServletContext().getContextPath() + "/HomePage";
 			response.sendRedirect(path);
 		}
 	}
