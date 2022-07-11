@@ -49,42 +49,49 @@ public class CheckRegister extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String email = request.getParameter("email");
-        String username = request.getParameter("username");
-		String password = request.getParameter("password");
-        String passwordRepeated = request.getParameter("passwordRepeated");
-		if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
-            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti");
-			return;
-		}
-		
-		UserDAO userDao = new UserDAO(connection);
-		boolean checkCredentialsDone = false;
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		try {
-			checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
-			if(checkCredentialsDone && password.equals(passwordRepeated)) {
-				userDao.registerUser(username, email, password);
+		
+		String email = request.getParameter("email");
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String passwordRepeated = request.getParameter("passwordRepeated");
+        if(username.contains(" ") || email.contains(" ") || password.contains(" ") || 
+        		passwordRepeated.contains(" ")) {
+        	ctx.setVariable("errorMsgRegistration", "Non è possibile inserire spazi vuoti.");
+        }
+        else {
+			if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
+	            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
+				return;
 			}
-			else {
-				if(!checkCredentialsDone && password.equals(passwordRepeated)) {
-					ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
+			
+			UserDAO userDao = new UserDAO(connection);
+			boolean checkCredentialsDone = false;
+			try {
+				checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
+				if(checkCredentialsDone && password.equals(passwordRepeated)) {
+					userDao.registerUser(username, email, password);
 				}
 				else {
-					ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali");
+					if(!checkCredentialsDone && password.equals(passwordRepeated)) {
+						ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
+					}
+					else {
+						ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali.");
+						ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
+						ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
+					}
 				}
+			} catch (SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.\n"
+						+ e.getMessage());
+				return;
 			}
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali "
-					+ e.getMessage());
-			return;
-		}
-		
+        }
+			
 		String path;
-		ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
-		ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
 		path = "/index.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}

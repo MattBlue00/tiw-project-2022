@@ -49,6 +49,9 @@ public class CheckLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
@@ -68,9 +71,6 @@ public class CheckLogin extends HttpServlet {
 		
 		String path;
 		if (user == null) {
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("usernameInserito", username != null || !username.isEmpty() ? username : "");
 			ctx.setVariable("errorMsgLogin", "Username o password errata");
 			path = "/index.html";
 			templateEngine.process(path, ctx, response.getWriter());
