@@ -15,7 +15,7 @@ public class UserDAO {
 	}
 
 	public User checkCredentials(String username, String password) throws SQLException {
-		String query = "SELECT * FROM utente WHERE email = ? AND password =?";
+		String query = "SELECT * FROM utente WHERE username = ? AND password =?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, username);
 			pstatement.setString(2, password);

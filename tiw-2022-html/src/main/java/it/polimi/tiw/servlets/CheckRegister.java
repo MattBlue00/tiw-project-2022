@@ -61,6 +61,8 @@ public class CheckRegister extends HttpServlet{
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean checkCredentialsDone = false;
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		try {
 			checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
 			if(checkCredentialsDone && password.equals(passwordRepeated)) {
@@ -68,10 +70,10 @@ public class CheckRegister extends HttpServlet{
 			}
 			else {
 				if(!checkCredentialsDone && password.equals(passwordRepeated)) {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Registrazione fallita.\nUsername o email già in uso.");
+					ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
 				}
 				else {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Registrazione fallita.\nLe password inserite non sono uguali.");
+					ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali");
 				}
 			}
 		} catch (SQLException e) {
@@ -81,11 +83,8 @@ public class CheckRegister extends HttpServlet{
 		}
 		
 		String path;
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
 		ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
-		ctx.setVariable("errorMsg", "Email o password errata");
 		path = "/index.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}

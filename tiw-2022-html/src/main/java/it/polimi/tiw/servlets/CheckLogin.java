@@ -61,7 +61,8 @@ public class CheckLogin extends HttpServlet {
 		try {
 			user = userDao.checkCredentials(username, password);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.\n"
+			+ e.getMessage()		);
 			return;
 		}
 		
@@ -70,7 +71,7 @@ public class CheckLogin extends HttpServlet {
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("usernameInserito", username != null || !username.isEmpty() ? username : "");
-			ctx.setVariable("errorMsg", "Username o password errata");
+			ctx.setVariable("errorMsgLogin", "Username o password errata");
 			path = "/index.html";
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
