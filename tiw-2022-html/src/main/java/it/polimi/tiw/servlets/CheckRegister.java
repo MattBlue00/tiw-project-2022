@@ -75,7 +75,8 @@ public class CheckRegister extends HttpServlet{
 				}
 			}
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali "
+					+ e.getMessage());
 			return;
 		}
 		

@@ -15,7 +15,7 @@ public class UserDAO {
 	}
 
 	public User checkCredentials(String username, String password) throws SQLException {
-		String query = "SELECT * FROM tiw-progetto.utente WHERE email = ? AND password =?";
+		String query = "SELECT * FROM utente WHERE email = ? AND password =?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, username);
 			pstatement.setString(2, password);
@@ -43,7 +43,7 @@ public class UserDAO {
 	 * @throws SQLException
 	 */
 	public boolean checkCredentialsRegistration(String email, String username) throws SQLException {
-		String query = "SELECT * FROM tiw-progetto.utente WHERE username = ? OR email =?";
+		String query = "SELECT * FROM utente WHERE username = ? OR email =?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, username);
 			pstatement.setString(2, email);
@@ -67,7 +67,7 @@ public class UserDAO {
 	 * @throws SQLException
 	 */
 	public void registerUser(String username, String email, String password) throws SQLException {
-		String query = "INSERT INTO tiw-progetto.utente (username, email, password) VALUES(?, ?, ?)";
+		String query = "INSERT INTO utente (username, email, password) VALUES(?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, username);
 			pstatement.setString(2, email);
