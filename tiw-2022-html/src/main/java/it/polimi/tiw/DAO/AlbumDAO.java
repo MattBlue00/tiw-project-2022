@@ -50,4 +50,13 @@ public class AlbumDAO {
 			}
 		}
 	}
+	
+	public void createAlbum(String owner, String title) throws SQLException {
+		String query = "INSERT INTO album (proprietario, titolo, data_creazione) VALUES(?, ?, CURDATE())";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, owner);
+			pstatement.setString(2, title);
+			pstatement.executeUpdate();
+		}
+	}
 }
