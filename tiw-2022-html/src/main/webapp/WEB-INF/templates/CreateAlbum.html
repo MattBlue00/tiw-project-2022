@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Crea un nuovo album</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+
+	<div class="divCreateAlbum">
+		<h2>Crea un nuovo album</h2>
+		<form action="CreateAlbum" method="POST">
+			<table class=createAlbumTable>
+				<tr>
+					<td><input type="text" name="title" placeholder="titolo album" required ></td>
+				</tr>
+				<tr>
+					<td><input type="file" name="image" placeholder="immagine" required ></td>
+				</tr>
+				<tr>			
+					<td colspan="2" th:text=" ${errorMsg}"> </td>
+				</tr>
+				<tr>			
+					<td colspan="2"><input type="submit" value="Crea"></td>
+				</tr>		
+			</table><br>
+		</form>
+	</div>
+
+
+</body>
+</html>

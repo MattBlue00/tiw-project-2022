@@ -10,10 +10,11 @@
 <h1>Visualizza i tuoi album, <span th:text="${session.utente.username}">utente</span></h1>
 
 <form name="logout" method="POST" action="Logout">
-  <label class="logout">
+  <label class="logoutButton">
   <input type="submit" value="Logout">
   </label>
 </form>
+
 	<div>
 		<table class="albumList">
 		<tr th:each="a : ${userAlbums}">
@@ -23,6 +24,13 @@
 		</tr>
 		</table>
 	</div>
+	
+<form name="GoToCreateAlbum" method="POST" action="GoToCreateAlbum">
+  <label class="createAlbumButton">
+  <input type="submit" value="Crea un nuovo album">
+  </label>
+</form>
+	
 <h2>Visualizza gli album degli altri utenti</h2>
 	<div>
 		<table class="albumList">
