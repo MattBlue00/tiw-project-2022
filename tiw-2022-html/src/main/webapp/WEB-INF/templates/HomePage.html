@@ -7,17 +7,25 @@
 		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
 </head>
 <body>
-<h1>Visualizza i tuoi album</h1>
+<h1>Visualizza i tuoi album, <span th:text="${session.utente.username}">utente</span></h1>
 	<div>
 		<table class="albumList">
 		<tr th:each="a : ${userAlbums}">
 			<td class="album">
-				<a th:href="@{/GoToAlbum(owner=${a.owner}, title=${a.title})">
-					<img th:src="@{'data:image/jpg;base64,'+${paimmagine}}" th:alt="${a.nome}" class="immagineGrande" />
-				</a>
+				<span th:text="${a.title}">titolo</span>
 			</td>
 		</tr>
-	</table>
+		</table>
+	</div>
+<h2>Visualizza gli album degli altri utenti</h2>
+	<div>
+		<table class="albumList">
+		<tr th:each="a : ${otherAlbums}">
+			<td class="album">
+				<span th:text="${a.title}">titolo</span>
+			</td>
+		</tr>
+		</table>
 	</div>
 </body>
 </html>
