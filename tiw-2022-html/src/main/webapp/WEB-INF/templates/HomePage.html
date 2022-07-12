@@ -8,6 +8,12 @@
 </head>
 <body>
 <h1>Visualizza i tuoi album, <span th:text="${session.utente.username}">utente</span></h1>
+
+<form name="logout" method="POST" action="Logout">
+  <label class="logout">
+  <input type="submit" value="Logout">
+  </label>
+</form>
 	<div>
 		<table class="albumList">
 		<tr th:each="a : ${userAlbums}">

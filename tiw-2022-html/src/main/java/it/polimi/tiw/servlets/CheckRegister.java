@@ -92,7 +92,7 @@ public class CheckRegister extends HttpServlet{
         }
 			
 		String path;
-		path = "/index.html";
+		path = "/login.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 	

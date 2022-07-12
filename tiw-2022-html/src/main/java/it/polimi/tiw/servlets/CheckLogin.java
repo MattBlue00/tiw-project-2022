@@ -72,7 +72,7 @@ public class CheckLogin extends HttpServlet {
 		String path;
 		if (user == null) {
 			ctx.setVariable("errorMsgLogin", "Username o password errata");
-			path = "/index.html";
+			path = "/login.html";
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
 			request.getSession().setAttribute("utente", user);
