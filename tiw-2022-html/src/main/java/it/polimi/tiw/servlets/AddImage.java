@@ -26,8 +26,8 @@ import it.polimi.tiw.utils.ConnectionHandler;
 /**
  * Servlet implementation class CreateAlbum
  */
-@WebServlet("/CreateAlbum")
-public class CreateAlbum extends HttpServlet {
+@WebServlet("/AddImage")
+public class AddImage extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
@@ -36,7 +36,7 @@ public class CreateAlbum extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateAlbum() {
+    public AddImage() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -64,28 +64,7 @@ public class CreateAlbum extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("utente");
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		String title = request.getParameter("title");
-		String imagePath = request.getParameter("imagePath");
-		if (title == null || imagePath == null || title.isEmpty() || imagePath.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori mancanti o inesistenti.");
-			return;
-		}
-		boolean albumCreated = false;
-		AlbumDAO albumDao = new AlbumDAO(connection);
-		try {
-			albumDao.createAlbum(user.getUsername(), title);
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile creare l'album.\n");
-			return;
-		}
-		Album album = new Album();
-		album.setOwner(user.getUsername());
-		album.setTitle(title);
-		//TODO
+		
 	}
 	
 	public void destroy() {

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Crea un nuovo album</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+
+	<div class="addImage">
+		<h2>Aggiungi immagini all'album</h2>
+		<form action="AddImage" method="POST">
+			<table class=addImageTable>
+				<tr>
+					<td><input type="file" name="image" placeholder="immagine" required ></td>
+				</tr>
+				<tr>
+					<td><input type="text" name="imageTitle" placeholder="titolo immagine" required ></td>
+				</tr>
+				<tr>
+					<td>
+					<textarea name="imageDescription" rows="4" cols="50" placeholder="Descrivi qui la tua immagine." required ></textarea>
+					</td>
+				</tr>
+				<tr>			
+					<td colspan="2" th:text=" ${errorMsg}"> </td>
+				</tr>	
+				<tr>			
+					<td colspan="2"><input type="submit" value="Aggiungi immagine"></td>
+				</tr>	
+			</table><br>
+		</form>
+	</div>
+
+	<div class="stopCreatingAlbum">
+		<form action="HomePage" method="POST">
+		<label class="goToHomePageButton">
+  			<input type="submit" value="Concludi e torna alla home page">
+  		</label>
+		</form>
+	</div>
+
+</body>
+</html>

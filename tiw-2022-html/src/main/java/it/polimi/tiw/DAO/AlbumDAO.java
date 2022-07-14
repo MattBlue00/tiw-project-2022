@@ -42,7 +42,6 @@ public class AlbumDAO {
 						Album album = new Album();
 						album.setOwner(result.getString("proprietario"));
 						album.setTitle(result.getString("titolo"));
-						album.setCreationDate(result.getDate("data_creazione"));
 						albums.add(album);
 					}
 					return albums;
