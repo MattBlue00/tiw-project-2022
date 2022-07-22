@@ -50,12 +50,27 @@ public class AlbumDAO {
 		}
 	}
 	
-	public void createAlbum(String owner, String title) throws SQLException {
-		String query = "INSERT INTO album (proprietario, titolo, data_creazione) VALUES(?, ?, CURDATE())";
+	public void createAlbum(Album album) throws SQLException {
+		String query = "INSERT INTO album (proprietario, titolo, data_creazione) VALUES(?, ?, CURRENT_TIMESTAMP())";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, owner);
-			pstatement.setString(2, title);
+			pstatement.setString(1, album.getOwner());
+			pstatement.setString(2, album.getTitle());
 			pstatement.executeUpdate();
+		}
+	}
+	
+	public boolean checkAlbumTitle(Album album) throws SQLException {
+		String query = "SELECT * FROM album WHERE proprietario = ? AND titolo = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, album.getOwner());
+			pstatement.setString(2, album.getTitle());
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst()) // no results
+					return true; // the album can be created
+				else {
+					return false;
+				}
+			}
 		}
 	}
 }

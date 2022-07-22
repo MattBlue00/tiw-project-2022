@@ -22,14 +22,14 @@ import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 
-@WebServlet("/GoToAddImage")
-public class GoToAddImage extends HttpServlet {
+@WebServlet("/CreateAlbum")
+public class CreateAlbum extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
 	
-	public GoToAddImage() {
+	public CreateAlbum() {
 		super();
 	}
 	
@@ -55,18 +55,27 @@ public class GoToAddImage extends HttpServlet {
 			return;
 		}
 		AlbumDAO albumDao = new AlbumDAO(connection);
+		Album album = new Album();
+		album.setOwner(user.getUsername());
+		album.setTitle(title);
+		String path;
 		try {
-			albumDao.createAlbum(user.getUsername(), title);
+			if(albumDao.checkAlbumTitle(album)) {
+				albumDao.createAlbum(album);
+				request.getSession().setAttribute("album", album);
+				path = "/WEB-INF/templates/AddImage.html";
+				templateEngine.process(path, ctx, response.getWriter());
+			}
+			else {
+				request.getSession().setAttribute("titleWarning", Boolean.valueOf(true));
+				path = getServletContext().getContextPath() + "/HomePage";
+				response.sendRedirect(path);
+			}
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile creare l'album.\n");
 			return;
 		}
-		Album album = new Album();
-		album.setOwner(user.getUsername());
-		album.setTitle(title);
-		request.getSession().setAttribute("album", album);
-		String path = "/WEB-INF/templates/AddImage.html";
-		templateEngine.process(path, ctx, response.getWriter());
+		
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 

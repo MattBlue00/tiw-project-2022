@@ -79,6 +79,10 @@ public class HomePage extends HttpServlet {
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("userAlbums", userAlbums);
 		ctx.setVariable("otherAlbums", otherAlbums);
+		if(request.getSession().getAttribute("titleWarning") != null) {
+			ctx.setVariable("errorMsg", "Il nome scelto è già presente.");
+			request.getSession().removeAttribute("titleWarning");
+		}
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

@@ -32,16 +32,7 @@ public class UserDAO {
 		}
 	}
 	
-	/**
-	 * This method checks if other users have the same username and/or the same email.
-	 * If the username and/or the email are not unique checkCredentialsRegistration returns false, 
-	 * otherwise returns true.
-	 * 
-	 * @param email - email of the user who is trying to register.
-	 * @param username - username of the user who is trying to register.
-	 * @return a boolean: true if the username and the email are unique, otherwise false .
-	 * @throws SQLException
-	 */
+	
 	public boolean checkCredentialsRegistration(String email, String username) throws SQLException {
 		String query = "SELECT * FROM utente WHERE username = ? OR email =?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
@@ -57,21 +48,13 @@ public class UserDAO {
 		}
 	}
 	
-	/**
-	 * This method register a new user.
-	 * 
-	 * @param username - unique username that the user chose.
-	 * @param email - unique email that the user chose.
-	 * @param password - password that the user chose.
-	 * @return
-	 * @throws SQLException
-	 */
-	public void registerUser(String username, String email, String password) throws SQLException {
+
+	public void registerUser(User user) throws SQLException {
 		String query = "INSERT INTO utente (username, email, password) VALUES(?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, username);
-			pstatement.setString(2, email);
-			pstatement.setString(3, password);
+			pstatement.setString(1, user.getUsername());
+			pstatement.setString(2, user.getEmail());
+			pstatement.setString(3, user.getPassword());
 			pstatement.executeUpdate();
 		}
 	}

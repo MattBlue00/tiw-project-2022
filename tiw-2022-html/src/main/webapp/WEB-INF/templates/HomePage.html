@@ -16,7 +16,8 @@
 </form>
 
 	<div>
-		<table class="albumList">
+		<p class="emptyListMessage" th:if = "${#lists.isEmpty(userAlbums)}">Non hai ancora caricato nessun album.</p>
+		<table class="albumList" th:if = "${not #lists.isEmpty(userAlbums)}">
 		<tr th:each="a : ${userAlbums}">
 			<td class="album">
 				<span th:text="${a.title}">titolo</span>
@@ -25,19 +26,36 @@
 		</table>
 	</div>
 	
-<form name="GoToAddImage" method="POST" action="GoToAddImage">
-  <input type="text" name="title" placeholder="titolo album" required >
-  <label class="createAlbumButton">
-  <input type="submit" value="Crea un nuovo album">
-  </label>
+<form name="CreateAlbum" method="POST" action="CreateAlbum">
+	<table class="createAlbumTable">
+	  	<tr>			
+			<td colspan="2" th:text=" ${errorMsg}"> </td>
+	  	</tr>
+	  	<tr>
+	  		<td>
+		  	<input type="text" name="title" placeholder="titolo album" maxlength="30" required >
+		  	</td>
+	  	</tr>
+	  	<tr>
+	  		<td>
+		  	<label class="createAlbumButton">
+		  	<input type="submit" value="Crea un nuovo album">
+		  	</label>
+		  	</td>
+	  	</tr>
+  	</table><br>
 </form>
 	
 <h2>Visualizza gli album degli altri utenti</h2>
 	<div>
-		<table class="albumList">
+	<p class="emptyListMessage" th:if = "${#lists.isEmpty(otherAlbums)}">Gli altri utenti non hanno ancora caricato nessun album.</p>
+		<table class="albumList" th:if = "${not #lists.isEmpty(otherAlbums)}">
 		<tr th:each="a : ${otherAlbums}">
-			<td class="album">
+			<td class="albumTitle">
 				<span th:text="${a.title}">titolo</span>
+			</td>
+			<td class="albumOwner">
+				<span th:text="${a.owner}">utente</span>
 			</td>
 		</tr>
 		</table>

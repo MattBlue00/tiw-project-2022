@@ -68,11 +68,15 @@ public class CheckRegister extends HttpServlet{
 			}
 			
 			UserDAO userDao = new UserDAO(connection);
+			User user = new User();
+			user.setUsername(username);
+			user.setPassword(password);
+			user.setEmail(email);
 			boolean checkCredentialsDone = false;
 			try {
 				checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
 				if(checkCredentialsDone && password.equals(passwordRepeated)) {
-					userDao.registerUser(username, email, password);
+					userDao.registerUser(user);
 				}
 				else {
 					if(!checkCredentialsDone && password.equals(passwordRepeated)) {
@@ -91,8 +95,7 @@ public class CheckRegister extends HttpServlet{
 			}
         }
 			
-		String path;
-		path = "/login.html";
+		String path = "/login.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 	

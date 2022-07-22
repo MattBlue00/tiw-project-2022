@@ -10,21 +10,21 @@
 
 	<div class="addImage">
 		<h2>Aggiungi immagini all'album</h2>
-		<form action="AddImage" method="POST">
+		<form action="AddImage" method="POST" enctype="multipart/form-data">
 			<table class=addImageTable>
 				<tr>
-					<td><input type="file" name="image" placeholder="immagine" required ></td>
+					<td><input type="file" name="image" placeholder="immagine" accept="image/*" required ></td>
 				</tr>
 				<tr>
-					<td><input type="text" name="imageTitle" placeholder="titolo immagine" required ></td>
+					<td><input type="text" name="imageTitle" placeholder="titolo immagine" maxlength="30" required ></td>
 				</tr>
 				<tr>
 					<td>
-					<textarea name="imageDescription" rows="4" cols="50" placeholder="Descrivi qui la tua immagine." required ></textarea>
+					<textarea name="imageDescription" rows="4" cols="50" placeholder="Descrivi qui la tua immagine." maxlength="280" required ></textarea>
 					</td>
 				</tr>
 				<tr>			
-					<td colspan="2" th:text=" ${errorMsg}"> </td>
+					<td colspan="2" th:text=" ${successMsg}"> </td>
 				</tr>	
 				<tr>			
 					<td colspan="2"><input type="submit" value="Aggiungi immagine"></td>

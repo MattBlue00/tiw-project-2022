@@ -13,10 +13,10 @@
 		<form action="CheckLogin" method="POST">
 			<table class=loginTable>
 				<tr>
-					<td><input type="text" name="username" placeholder="username" required th:value=" ${usernameInseritoLogin}"></td>
+					<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInseritoLogin}"></td>
 				</tr>
 				<tr>
-					<td><input type="password" name="password" placeholder="password" required></td>
+					<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
 				</tr>
 				<tr>			
 					<td colspan="2" th:text=" ${errorMsgLogin}"> </td>
@@ -33,16 +33,16 @@
         <form action="CheckRegister" method="POST">
 			<table class=registerTable>
 				<tr>
-					<td><input type="email" name="email" placeholder="email" required th:value=" ${emailInserita}"></td>
+					<td><input type="email" name="email" placeholder="email" maxlength="100" required th:value=" ${emailInserita}"></td>
 				</tr>
                 <tr>
-					<td><input type="text" name="username" placeholder="username" required th:value=" ${usernameInserito}"></td>
+					<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInserito}"></td>
 				</tr>
 				<tr>
-					<td><input type="password" name="password" placeholder="password" required></td>
+					<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
 				</tr>
                 <tr>
-					<td><input type="password" name="passwordRepeated" placeholder="ripeti password" required></td>
+					<td><input type="password" name="passwordRepeated" placeholder="ripeti password" maxlength="20" required></td>
 				</tr>
 				<tr>			
 					<td colspan="2" th:text=" ${errorMsgRegistration}"> </td>

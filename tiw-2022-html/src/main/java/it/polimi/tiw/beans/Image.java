@@ -1,27 +1,54 @@
 package it.polimi.tiw.beans;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Image {
 	
-	private String title;
-	private Date date;
+	private int id;
+	private String owner;
+	private String albumTitle;
+	private String imageTitle;
+	private Timestamp date;
 	private String description;
 	private String path;
 	
-	public String getTitle() {
-		return title;
+	public int getID() {
+		return id;
 	}
 	
-	public void setTitle(String title) {
-		this.title = title;
+	public void setID(int id) {
+		this.id = id;
 	}
 	
-	public Date getDate() {
+	public String getOwner() {
+		return owner;
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+	
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
+	}
+	
+	public String getImageTitle() {
+		return imageTitle;
+	}
+	
+	public void setImageTitle(String imageTitle) {
+		this.imageTitle = imageTitle;
+	}
+	
+	public Timestamp getDate() {
 		return date;
 	}
 	
-	public void setDate(Date date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 	
