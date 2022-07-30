@@ -146,7 +146,7 @@ public class AddImage extends HttpServlet {
 			return;
 		}
 		
-		ctx.setVariable("successMsg", "L'immagine " + image.getImageTitle() + " è stata aggiunta correttamente.");
+		ctx.setVariable("successMsg", "L'immagine \"" + image.getImageTitle() + "\" è stata aggiunta correttamente.");
 		String path = "/WEB-INF/templates/AddImage.html";
 		templateEngine.process(path, ctx, response.getWriter());
 

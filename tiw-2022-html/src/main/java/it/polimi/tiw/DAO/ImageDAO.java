@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Image;
 
 public class ImageDAO {
@@ -26,6 +30,33 @@ public class ImageDAO {
 					result.next();
 					int count = result.getInt("total");
 					return count + 1;
+				}
+			}
+		}
+	}
+	
+	public List<Image> getAlbumImages(String username, String album) throws SQLException {
+		String query = "SELECT * FROM immagine WHERE proprietario_album <> ? AND titolo_album <> ? ORDER BY data_creazione DESC";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, username);
+			pstatement.setString(2, album);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst()) // no results
+					return Collections.emptyList();
+				else {
+					List<Image> images = new ArrayList<>();
+					while(result.next()) {
+						Image image = new Image();
+						image.setID(result.getInt("id"));
+						image.setOwner(result.getString("proprietario_album"));
+						image.setAlbumTitle(result.getString("titolo_album"));
+						image.setImageTitle(result.getString("titolo_immagine"));
+						image.setDate(result.getTimestamp("data"));
+						image.setDescription(result.getString("descrizione"));
+						image.setPath(result.getString("path"));
+						images.add(image);
+					}
+					return images;
 				}
 			}
 		}

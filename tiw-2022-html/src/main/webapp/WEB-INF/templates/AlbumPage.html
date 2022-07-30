@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>ALBUM PAGE</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/stylesheet.css" th:href="@{/css/stylesheet.css}" />
+</head>
+<body>
+
+	<div>
+	<table width ="100%">
+	<tr width="100%">
+		<td align="left"><a th:href="@{/HomePage}"> Home </a></td>
+		<td align="right"><a href="#" th:href="@{/Logout}" > Logout </a></td>
+	</tr>
+	</table>
+	</div>
+
+	<div align="center">
+	<h1>ALBUMPAGE</h1>
+	<h3 th:text="${album.titolo}"></h3>
+	<p th:text="${album.proprietario}"></p>
+	</div>
+</body>
+</html>

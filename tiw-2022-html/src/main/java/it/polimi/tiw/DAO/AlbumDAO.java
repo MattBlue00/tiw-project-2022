@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import it.polimi.tiw.beans.Album;
+import it.polimi.tiw.beans.User;
 
 public class AlbumDAO {
 	
@@ -56,6 +57,26 @@ public class AlbumDAO {
 			pstatement.setString(1, album.getOwner());
 			pstatement.setString(2, album.getTitle());
 			pstatement.executeUpdate();
+		}
+	}
+	
+	public Album searchAlbumFromTitle(String albumTitle, String owner) throws SQLException {
+		String query = "SELECT * FROM album WHERE titolo = ? AND proprietario = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, albumTitle);
+			pstatement.setString(2, owner);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst()) // no results
+					return null;
+				else {
+					result.next();
+					Album album = new Album();
+					album.setOwner(result.getString("proprietario"));
+					album.setTitle(result.getString("titolo"));
+					album.setCreationDate(result.getTimestamp("data_creazione"));
+					return album;
+				}
+			}
 		}
 	}
 	

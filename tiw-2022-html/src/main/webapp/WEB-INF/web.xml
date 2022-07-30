@@ -23,7 +23,8 @@
 	</context-param>
 	<context-param>
     	<param-name>imagePath</param-name>
-    	<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value>
+    	<!-- <param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value> -->
+  		<param-value>/Users/tcalb/Desktop/tiw/immagini/</param-value>
   </context-param>
 	
 	<welcome-file-list>

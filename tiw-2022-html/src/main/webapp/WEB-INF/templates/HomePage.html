@@ -17,10 +17,10 @@
 
 	<div>
 		<p class="emptyListMessage" th:if = "${#lists.isEmpty(userAlbums)}">Non hai ancora caricato nessun album.</p>
-		<table class="albumList" th:if = "${not #lists.isEmpty(userAlbums)}">
+		<table class="albumList" th:if = "${not #lists.isEmpty(userAlbums)}" >
 		<tr th:each="a : ${userAlbums}">
-			<td class="album">
-				<span th:text="${a.title}">titolo</span>
+			<td class="album" >
+				<a th:href="@{/GoToAlbumPage(titolo=${a.title}, proprietario=${a.owner})}" th:text="${a.title}">titolo</a>
 			</td>
 		</tr>
 		</table>
@@ -52,7 +52,7 @@
 		<table class="albumList" th:if = "${not #lists.isEmpty(otherAlbums)}">
 		<tr th:each="a : ${otherAlbums}">
 			<td class="albumTitle">
-				<span th:text="${a.title}">titolo</span>
+				<a th:href="@{/GoToAlbumPage(titolo=${a.title}, proprietario=${a.owner})}" th:text="${a.title}">titolo</a>
 			</td>
 			<td class="albumOwner">
 				<span th:text="${a.owner}">utente</span>
