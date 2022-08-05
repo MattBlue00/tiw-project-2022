@@ -63,7 +63,7 @@ public class AddImage extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
 		// starting path for saving images' files
-    	imagePath = getServletContext().getInitParameter("imagePath");
+    	imagePath = getServletContext().getInitParameter("folderPath");
 	}
 
 	/**

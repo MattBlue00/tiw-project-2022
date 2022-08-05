@@ -35,6 +35,7 @@ public class AlbumPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
+	private static final int MAX_NUM_IMAGES = 5;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -62,17 +63,60 @@ public class AlbumPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		Album album = (Album) session.getAttribute("album");
-		ImageDAO imageDAO = new ImageDAO(connection);
 		
+		String albumTitle, albumOwner;
+		if(session.getAttribute("albumTitle") == null) {
+			albumTitle = request.getParameter("titoloAlbum");
+			session.setAttribute("albumTitle", albumTitle);
+		}
+		else
+			albumTitle = (String) session.getAttribute("albumTitle");
+		if(session.getAttribute("albumOwner") == null) {
+			albumOwner = request.getParameter("proprietarioAlbum");
+			session.setAttribute("albumOwner", albumOwner);
+		}
+		else
+			albumOwner = (String) session.getAttribute("albumOwner");
+		
+		ImageDAO imageDAO = new ImageDAO(connection);
 		List<Image> albumImages = new ArrayList<>();
 		try {
-			albumImages.addAll(imageDAO.getAlbumImages(album.getOwner(), album.getTitle()));
+			albumImages.addAll(imageDAO.getAlbumImages(albumOwner, albumTitle));
 		} 
 		catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare le immagini.");
 			return;
 		}
+		
+		Integer firstImageIndex = (Integer) session.getAttribute("firstImageIndex");
+		if(firstImageIndex == null)
+			firstImageIndex = 0;
+		else {
+			if(request.getParameter("buttonValue") != null) {
+				if(((String) request.getParameter("buttonValue")).equalsIgnoreCase("previous"))
+					firstImageIndex = firstImageIndex - MAX_NUM_IMAGES;
+				else 
+					firstImageIndex = firstImageIndex + MAX_NUM_IMAGES;
+			}
+		}
+		session.setAttribute("firstImageIndex", firstImageIndex);
+		
+		int listLength = albumImages.size();
+		int lastImageIndex = firstImageIndex + MAX_NUM_IMAGES;
+		if(listLength > MAX_NUM_IMAGES) {
+			if(lastImageIndex > listLength)
+				lastImageIndex = listLength;
+			albumImages = albumImages.subList(firstImageIndex, lastImageIndex);
+		}
+		
+		if(firstImageIndex >= MAX_NUM_IMAGES)
+			session.setAttribute("previousButtonNeeded", Boolean.valueOf(true));
+		else
+			session.setAttribute("previousButtonNeeded", Boolean.valueOf(false));
+		if(listLength > lastImageIndex)
+			session.setAttribute("nextButtonNeeded", Boolean.valueOf(true));
+		else
+			session.setAttribute("nextButtonNeeded", Boolean.valueOf(false));
 		
 		String path = "/WEB-INF/templates/AlbumPage.html";
 		ServletContext servletContext = getServletContext();

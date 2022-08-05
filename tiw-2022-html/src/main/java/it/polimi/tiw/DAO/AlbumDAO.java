@@ -60,26 +60,6 @@ public class AlbumDAO {
 		}
 	}
 	
-	public Album searchAlbumFromTitle(String albumTitle, String owner) throws SQLException {
-		String query = "SELECT * FROM album WHERE titolo = ? AND proprietario = ?";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, albumTitle);
-			pstatement.setString(2, owner);
-			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst()) // no results
-					return null;
-				else {
-					result.next();
-					Album album = new Album();
-					album.setOwner(result.getString("proprietario"));
-					album.setTitle(result.getString("titolo"));
-					album.setCreationDate(result.getTimestamp("data_creazione"));
-					return album;
-				}
-			}
-		}
-	}
-	
 	public boolean checkAlbumTitle(Album album) throws SQLException {
 		String query = "SELECT * FROM album WHERE proprietario = ? AND titolo = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {

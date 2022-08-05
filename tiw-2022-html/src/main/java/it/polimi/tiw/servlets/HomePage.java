@@ -79,10 +79,16 @@ public class HomePage extends HttpServlet {
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("userAlbums", userAlbums);
 		ctx.setVariable("otherAlbums", otherAlbums);
-		if(request.getSession().getAttribute("titleWarning") != null) {
+		if(session.getAttribute("titleWarning") != null) {
 			ctx.setVariable("errorMsg", "Il nome scelto è già presente.");
-			request.getSession().removeAttribute("titleWarning");
+			session.removeAttribute("titleWarning");
 		}
+		if(session.getAttribute("firstImageIndex") != null)
+			session.removeAttribute("firstImageIndex");
+		if(session.getAttribute("albumTitle") != null)
+			session.removeAttribute("albumTitle");
+		if(session.getAttribute("albumOwner") != null)
+			session.removeAttribute("albumOwner");
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

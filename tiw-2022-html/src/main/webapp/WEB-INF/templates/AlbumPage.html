@@ -2,25 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>ALBUM PAGE</title>
+<title>Album</title>
 <link rel="stylesheet" type="text/css" media="all"
 	href="../CSS/stylesheet.css" th:href="@{/css/stylesheet.css}" />
 </head>
 <body>
+<h1>Visualizza l'album <span th:text="${session.albumTitle}"></span> di <span th:text="${session.albumOwner}">un utente</span></h1>
 
 	<div>
-	<table width ="100%">
-	<tr width="100%">
-		<td align="left"><a th:href="@{/HomePage}"> Home </a></td>
-		<td align="right"><a href="#" th:href="@{/Logout}" > Logout </a></td>
-	</tr>
-	</table>
+		<form name="homePage" method="POST" action="HomePage">
+  		<label class="homePageButton">
+  		<input type="submit" value="Home Page">
+  		</label>
+  		</form>
+  		<form name="logout" method="POST" action="Logout">
+  		<label class="logoutButton">
+  		<input type="submit" value="Logout">
+  		</label>
+		</form>
 	</div>
-
-	<div align="center">
-	<h1>ALBUMPAGE</h1>
-	<h3 th:text="${album.titolo}"></h3>
-	<p th:text="${album.proprietario}"></p>
+	
+	<div>
+	<p class="emptyListMessage" th:if = "${#lists.isEmpty(albumImages)}">L'album non contiene nessuna immagine.</p>
+		<table class="albumList" th:if = "${not #lists.isEmpty(albumImages)}">
+		<tr>
+			<td th:each="i : ${albumImages}" class="image">
+			<img th:src="@{/GetImage(imagePath=${i.path})}" alt="immagine" width="200" height="auto">
+			</td>
+		</tr>
+		</table>
 	</div>
+	
+	<div>
+		<form name="previous" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='previous')}" th:if="${session.previousButtonNeeded}">
+  		<label class="previousButton">
+  		<input type="submit" value="Precedenti">
+  		</label>
+  		</form>
+  		<form name="logout" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='next')}" th:if="${session.nextButtonNeeded}">
+  		<label class="nextButton">
+  		<input type="submit" value="Successive">
+  		</label>
+		</form>
+	</div>
+	
 </body>
 </html>

@@ -35,11 +35,11 @@ public class ImageDAO {
 		}
 	}
 	
-	public List<Image> getAlbumImages(String username, String album) throws SQLException {
-		String query = "SELECT * FROM immagine WHERE proprietario_album <> ? AND titolo_album <> ? ORDER BY data_creazione DESC";
+	public List<Image> getAlbumImages(String albumOwner, String albumTitle) throws SQLException {
+		String query = "SELECT * FROM immagine WHERE proprietario_album = ? AND titolo_album = ? ORDER BY data DESC";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, username);
-			pstatement.setString(2, album);
+			pstatement.setString(1, albumOwner);
+			pstatement.setString(2, albumTitle);
 			try (ResultSet result = pstatement.executeQuery();) {
 				if (!result.isBeforeFirst()) // no results
 					return Collections.emptyList();
