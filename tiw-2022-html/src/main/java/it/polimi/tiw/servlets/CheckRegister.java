@@ -69,31 +69,32 @@ public class CheckRegister extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
 			return;
 		}
-				
-		UserDAO userDao = new UserDAO(connection);
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-		user.setEmail(email);
-		boolean checkCredentialsDone = false;
-		try {
-			checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
-			if(checkCredentialsDone && password.equals(passwordRepeated)) {
-				userDao.registerUser(user);
+    	else {		
+			UserDAO userDao = new UserDAO(connection);
+			User user = new User();
+			user.setUsername(username);
+			user.setPassword(password);
+			user.setEmail(email);
+			boolean checkCredentialsDone = false;
+			try {
+				checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
+				if(checkCredentialsDone && password.equals(passwordRepeated)) {
+					userDao.registerUser(user);
+					ctx.setVariable("successMsgRegistration", "Registrazione avvenuta correttamente.");			}
+				else if(!checkCredentialsDone && password.equals(passwordRepeated)) {
+					ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
+				}
+				else {
+					ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali.");
+					ctx.setVariable("emailInserita", email != null ? email : "");
+					ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
+				}
+			} catch (SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.\n"
+						+ e.getMessage());
+				return;
 			}
-			else if(!checkCredentialsDone && password.equals(passwordRepeated)) {
-				ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
-			}
-			else {
-				ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali.");
-				ctx.setVariable("emailInserita", email != null ? email : "");
-				ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
-			}
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.\n"
-					+ e.getMessage());
-			return;
-		}
+    	}
 			
 		String path = "/login.html";
 		templateEngine.process(path, ctx, response.getWriter());
