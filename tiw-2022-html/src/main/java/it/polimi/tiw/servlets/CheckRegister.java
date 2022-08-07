@@ -3,6 +3,7 @@ package it.polimi.tiw.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -60,13 +61,15 @@ public class CheckRegister extends HttpServlet{
         		passwordRepeated.contains(" ")) {
         	ctx.setVariable("errorMsgRegistration", "Non è possibile inserire spazi vuoti.");
         }
-        else {
-			if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
-	            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
-				return;
-			}
-			
+        else if(!CheckRegister.isEmailValid(email)) {
+        	ctx.setVariable("errorMsgRegistration", "La mail inserita non è valida.");	
+        }
+    	else if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
+		            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
+			return;
+		}
+    	else {		
 			UserDAO userDao = new UserDAO(connection);
 			User user = new User();
 			user.setUsername(username);
@@ -77,23 +80,21 @@ public class CheckRegister extends HttpServlet{
 				checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
 				if(checkCredentialsDone && password.equals(passwordRepeated)) {
 					userDao.registerUser(user);
+					ctx.setVariable("successMsgRegistration", "Registrazione avvenuta correttamente.");			}
+				else if(!checkCredentialsDone && password.equals(passwordRepeated)) {
+					ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
 				}
 				else {
-					if(!checkCredentialsDone && password.equals(passwordRepeated)) {
-						ctx.setVariable("errorMsgRegistration", "Username o email già in uso.");
-					}
-					else {
-						ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali.");
-						ctx.setVariable("emailInserita", (email != null || !email.isEmpty()) ? email : "");
-						ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
-					}
+					ctx.setVariable("errorMsgRegistration", "Le password inserite non sono uguali.");
+					ctx.setVariable("emailInserita", email != null ? email : "");
+					ctx.setVariable("usernameInserito", (username != null || !username.isEmpty()) ? username : "");
 				}
 			} catch (SQLException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile controllare le credenziali.\n"
 						+ e.getMessage());
 				return;
 			}
-        }
+    	}
 			
 		String path = "/login.html";
 		templateEngine.process(path, ctx, response.getWriter());
@@ -106,4 +107,16 @@ public class CheckRegister extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
+	
+	private static boolean isEmailValid(String email) {			
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";        
+		Pattern pat = Pattern.compile(emailRegex);
+		if (email == null)
+			return false;
+		return pat.matcher(email).matches();
+	}
+	
 }
