@@ -89,6 +89,10 @@ public class HomePage extends HttpServlet {
 			session.removeAttribute("albumTitle");
 		if(session.getAttribute("albumOwner") != null)
 			session.removeAttribute("albumOwner");
+		session.setAttribute("imageClicked", Boolean.valueOf(false));
+		session.removeAttribute("imageClicked");
+		session.setAttribute("commentAdded", Boolean.valueOf(false));
+		session.removeAttribute("commentAdded");
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

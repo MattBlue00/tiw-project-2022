@@ -19,9 +19,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.DAO.AlbumDAO;
+import it.polimi.tiw.DAO.CommentDAO;
 import it.polimi.tiw.DAO.ImageDAO;
-import it.polimi.tiw.beans.Album;
+import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
@@ -118,10 +118,62 @@ public class AlbumPage extends HttpServlet {
 		else
 			session.setAttribute("nextButtonNeeded", Boolean.valueOf(false));
 		
-		String path = "/WEB-INF/templates/AlbumPage.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		Image image = new Image();
+		
+		// se un'immagine viene selezionata aggiorniamo la pagina con i dettagli dell'immagine 
+		// e con gli eventuali commenti
+		
+		if(request.getParameter("idImmagine") != null) {
+			session.setAttribute("imageClicked", Boolean.valueOf(true));
+			try {
+				image = imageDAO.getImageFromId(Integer.valueOf(request.getParameter("idImmagine")));
+				
+			} catch (NumberFormatException | SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare l'immagine.");
+				e.printStackTrace();
+				return;
+			}
+			
+			session.setAttribute("image", image);
+			session.setAttribute("path", image.getPath());
+			
+		}
+		
+		String path = "/WEB-INF/templates/AlbumPage.html";
 		ctx.setVariable("albumImages", albumImages);
+		
+		if(session.getAttribute("imageClicked") != null || session.getAttribute("commentAdded") != null) {
+			
+			Image imageSelected = new Image();
+			imageSelected = (Image) session.getAttribute("image");
+			
+			ctx.setVariable("imageId", imageSelected.getID());
+			ctx.setVariable("imageTitle", imageSelected.getImageTitle());
+			ctx.setVariable("albumTitle", imageSelected.getAlbumTitle());
+			ctx.setVariable("albumOwner", imageSelected.getOwner());
+			ctx.setVariable("date", imageSelected.getDate());
+			ctx.setVariable("description", imageSelected.getDescription());
+			ctx.setVariable("path", imageSelected.getPath());
+			User user = (User) session.getAttribute("utente");
+			ctx.setVariable("user", user.getUsername());
+			
+			// estraiamo i commenti dal database
+			List<Comment> comments = new ArrayList<Comment>();
+			CommentDAO commentDAO = new CommentDAO(connection);
+			
+			try {
+				comments = commentDAO.getImageComments(imageSelected.getID());
+				ctx.setVariable("commenti", comments);
+			} catch (SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare i commenti.");
+				e.printStackTrace();
+				return;
+			}
+		}
+		
+		session.removeAttribute("commentAdded");
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

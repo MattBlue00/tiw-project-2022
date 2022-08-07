@@ -23,10 +23,10 @@
 	</context-param>
 	<context-param>
     	<param-name>folderPath</param-name>
-    	<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value>
-  		<!-- <param-value>/Users/tcalb/Desktop/tiw/immagini/</param-value> -->
-  </context-param>
-	
+    	<!--<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value> -->
+  		<param-value>/Users/tcalb/Desktop/tiw/immagini/</param-value>
+  	</context-param>
+ 
 	<welcome-file-list>
 		<welcome-file>login.html</welcome-file>
 	</welcome-file-list>
