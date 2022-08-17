@@ -32,6 +32,7 @@ import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.Constants;
 
 /**
  * Servlet implementation class CreateAlbum
@@ -83,6 +84,17 @@ public class AddImage extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         
+		String imageTitle = (String) request.getParameter("imageTitle");
+		String imageDescription = (String) request.getParameter("imageDescription");
+		if(imageTitle == null || imageDescription == null || imageTitle.isEmpty() || imageDescription.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori mancanti o inesistenti.");
+			return;
+		}
+		if(imageTitle.length() > Constants.IMAGE_TITLE_MAX_DIM || imageDescription.length() > Constants.IMAGE_DESCRIPTION_MAX_DIM) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori inseriti troppo lunghi.");
+			return;
+		}
+		
 		Part filePart = request.getPart("image");
 		// the parameter needed must be present
 		if (filePart == null || filePart.getSize() <= 0) {
@@ -135,9 +147,9 @@ public class AddImage extends HttpServlet {
 		image.setID(imageID);
 		image.setOwner(user.getUsername());
 		image.setAlbumTitle(album.getTitle());
-		image.setImageTitle(((String) request.getParameter("imageTitle")));
+		image.setImageTitle(imageTitle);
 		image.setDate(new Timestamp(attributes.creationTime().toMillis()));
-		image.setDescription(((String) request.getParameter("imageDescription")));
+		image.setDescription(imageDescription);
 		image.setPath(imageOutputPath);
 		try {
 			imageDao.createImage(image);

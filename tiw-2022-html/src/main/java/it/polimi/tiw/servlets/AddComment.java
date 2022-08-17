@@ -19,6 +19,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.DAO.CommentDAO;
 import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.Constants;
 
 /**
  * Servlet implementation class AddComment
@@ -56,16 +57,25 @@ public class AddComment extends HttpServlet {
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		HttpSession session = request.getSession();
 		
+		String commentText = request.getParameter("commentText");
+		if(commentText == null || commentText.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito mancante o inesistente.");
+			return;
+		}
+		if(commentText.length() > Constants.COMMENT_MAX_LENGTH) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito troppo lungo.");
+			return;
+		}
+		
 		Comment comment = new Comment();
 		comment.setImageId(Integer.valueOf(request.getParameter("id_immagine")));
 		comment.setOwner(request.getParameter("utente"));
-		comment.setText(request.getParameter("commentText"));
+		comment.setText(commentText);
 		CommentDAO commentDAO = new CommentDAO(connection);
 		try {
 			commentDAO.createComment(comment);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha potuto salvare le informazioni relative al commento.\n");
-			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha potuto salvare le informazioni relative al commento.");
 			return;
 		}
 		ctx.setVariable("successMsg", "Il commento è stato aggiunto correttamente.");

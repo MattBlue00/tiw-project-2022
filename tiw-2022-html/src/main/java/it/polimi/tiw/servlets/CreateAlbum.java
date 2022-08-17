@@ -21,6 +21,7 @@ import it.polimi.tiw.DAO.AlbumDAO;
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.Constants;
 
 @WebServlet("/CreateAlbum")
 public class CreateAlbum extends HttpServlet {
@@ -52,6 +53,10 @@ public class CreateAlbum extends HttpServlet {
 		String title = request.getParameter("title");
 		if (title == null || title.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori mancanti o inesistenti.");
+			return;
+		}
+		if(title.length() > Constants.ALBUM_TITLE_MAX_DIM) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito troppo lungo.");
 			return;
 		}
 		AlbumDAO albumDao = new AlbumDAO(connection);

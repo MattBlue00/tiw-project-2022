@@ -18,6 +18,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.DAO.UserDAO;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.Constants;
 
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet {
@@ -56,6 +57,10 @@ public class CheckLogin extends HttpServlet {
 		String password = request.getParameter("password");
 		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
+			return;
+		}
+		if(username.length() > Constants.USERNAME_MAX_DIM || password.length() > Constants.PASSWORD_MAX_DIM) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori inseriti troppo lunghi.");
 			return;
 		}
 		
