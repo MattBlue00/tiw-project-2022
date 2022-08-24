@@ -21,6 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.DAO.CommentDAO;
 import it.polimi.tiw.DAO.ImageDAO;
+import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.beans.User;
@@ -63,72 +64,115 @@ public class AlbumPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		
-		String albumTitle, albumOwner;
-		if(session.getAttribute("albumTitle") == null) {
+		int pageNumber = -1;
+		
+		// entriamo in questo if ogni volta che selezioniamo (clicchiamo) un album
+		if(request.getParameter("titoloAlbum") != null && request.getParameter("proprietarioAlbum") != null) {
+			String albumTitle, albumOwner;
+			Album album = new Album();
+			
 			albumTitle = request.getParameter("titoloAlbum");
-			session.setAttribute("albumTitle", albumTitle);
-		}
-		else
-			albumTitle = (String) session.getAttribute("albumTitle");
-		if(session.getAttribute("albumOwner") == null) {
 			albumOwner = request.getParameter("proprietarioAlbum");
-			session.setAttribute("albumOwner", albumOwner);
+			album.setOwner(albumOwner);
+			album.setTitle(albumTitle);
+			session.setAttribute("album", album);
+			ctx.setVariable("pageNumber", 1);
+			pageNumber = 1;
 		}
-		else
-			albumOwner = (String) session.getAttribute("albumOwner");
 		
+		// prendiamo il valore di pageNumber
+		else {
+			if(request.getParameter("pageNumber") != null) {
+				pageNumber = Integer.valueOf(request.getParameter("pageNumber"));
+			}
+			else {
+				pageNumber = (int) request.getAttribute("pageNumber");
+			}
+		}
+		
+		Album album = (Album) session.getAttribute("album");
+		
+		ctx.setVariable("albumTitle", album.getTitle());
+		ctx.setVariable("albumOwner", album.getOwner());
+		
+		// carichiamo le immagini dell'album
 		ImageDAO imageDAO = new ImageDAO(connection);
 		List<Image> albumImages = new ArrayList<>();
 		try {
-			albumImages.addAll(imageDAO.getAlbumImages(albumOwner, albumTitle));
+			albumImages.addAll(imageDAO.getAlbumImages(album.getOwner(), album.getTitle()));
 		} 
 		catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare le immagini.");
 			return;
 		}
 		
-		Integer firstImageIndex = (Integer) session.getAttribute("firstImageIndex");
-		if(firstImageIndex == null)
-			firstImageIndex = 0;
-		else {
-			if(request.getParameter("buttonValue") != null) {
-				if(((String) request.getParameter("buttonValue")).equalsIgnoreCase("previous"))
-					firstImageIndex = firstImageIndex - MAX_NUM_IMAGES;
-				else 
-					firstImageIndex = firstImageIndex + MAX_NUM_IMAGES;
-			}
+		// se l'album è vuoto non serve pageNumber
+		if(albumImages.isEmpty()) {
+			ctx.removeVariable("pageNumber");
 		}
-		session.setAttribute("firstImageIndex", firstImageIndex);
 		
+		if(((User) session.getAttribute("utente")).getUsername().equals(album.getOwner())) {
+			ctx.setVariable("addImageAllowed", Boolean.valueOf(true));
+		}
+		
+		// gestione dei button
+		if(request.getParameter("buttonValue") != null) {
+			if(((String) request.getParameter("buttonValue")).equalsIgnoreCase("previous")) {
+				pageNumber--;
+				ctx.setVariable("pageNumber", pageNumber);
+				}
+			else {
+				pageNumber++;
+				ctx.setVariable("pageNumber", pageNumber);
+			}
+				
+		}
+		
+		// mostriamo 5 immagini alla volta
 		int listLength = albumImages.size();
-		int lastImageIndex = firstImageIndex + MAX_NUM_IMAGES;
+		int firstImageIndex = (pageNumber - 1)* MAX_NUM_IMAGES;
+		int lastImageIndex = pageNumber * MAX_NUM_IMAGES;
 		if(listLength > MAX_NUM_IMAGES) {
 			if(lastImageIndex > listLength)
 				lastImageIndex = listLength;
 			albumImages = albumImages.subList(firstImageIndex, lastImageIndex);
 		}
 		
-		if(firstImageIndex >= MAX_NUM_IMAGES)
-			session.setAttribute("previousButtonNeeded", Boolean.valueOf(true));
-		else
-			session.setAttribute("previousButtonNeeded", Boolean.valueOf(false));
-		if(listLength > lastImageIndex)
-			session.setAttribute("nextButtonNeeded", Boolean.valueOf(true));
-		else
-			session.setAttribute("nextButtonNeeded", Boolean.valueOf(false));
+		if(firstImageIndex >= MAX_NUM_IMAGES) {
+			ctx.setVariable("previousButtonNeeded", Boolean.valueOf(true));
+			}
+		else {
+			ctx.setVariable("previousButtonNeeded", Boolean.valueOf(false));
+			}
+		if(listLength > lastImageIndex) {
+			ctx.setVariable("nextButtonNeeded", Boolean.valueOf(true));
+			}
+		else {
+			ctx.setVariable("nextButtonNeeded", Boolean.valueOf(false));
+			}
 		
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		Image image = new Image();
 		
 		// se un'immagine viene selezionata aggiorniamo la pagina con i dettagli dell'immagine 
 		// e con gli eventuali commenti
 		
+		Integer imageId = null;
+		if(request.getAttribute("imageID") != null) {
+			imageId = (int) request.getAttribute("imageID");
+			ctx.setVariable("successMsg", "Il commento è stato aggiunto correttamente.");
+		}
+		
 		if(request.getParameter("idImmagine") != null) {
-			session.setAttribute("imageClicked", Boolean.valueOf(true));
+			imageId = Integer.valueOf(request.getParameter("idImmagine"));
+		}
+		
+		if(imageId != null ) {
+			ctx.setVariable("imageClicked", Boolean.valueOf(true));
 			try {
-				image = imageDAO.getImageFromId(Integer.valueOf(request.getParameter("idImmagine")));
+				image = imageDAO.getImageFromId(imageId);
 				
 			} catch (NumberFormatException | SQLException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare l'immagine.");
@@ -136,44 +180,36 @@ public class AlbumPage extends HttpServlet {
 				return;
 			}
 			
-			session.setAttribute("image", image);
-			session.setAttribute("path", image.getPath());
-			
-		}
-		
-		String path = "/WEB-INF/templates/AlbumPage.html";
-		ctx.setVariable("albumImages", albumImages);
-		
-		if(session.getAttribute("imageClicked") != null || session.getAttribute("commentAdded") != null) {
-			
-			Image imageSelected = new Image();
-			imageSelected = (Image) session.getAttribute("image");
-			
-			ctx.setVariable("imageId", imageSelected.getID());
-			ctx.setVariable("imageTitle", imageSelected.getImageTitle());
-			ctx.setVariable("albumTitle", imageSelected.getAlbumTitle());
-			ctx.setVariable("albumOwner", imageSelected.getOwner());
-			ctx.setVariable("date", imageSelected.getDate());
-			ctx.setVariable("description", imageSelected.getDescription());
-			ctx.setVariable("path", imageSelected.getPath());
+			// dettagli dell'immagine
+			ctx.setVariable("image", image);
+			ctx.setVariable("imageId", image.getID());
+			ctx.setVariable("imageTitle", image.getImageTitle());
+			ctx.setVariable("albumTitle", image.getAlbumTitle());
+			ctx.setVariable("albumOwner", image.getOwner());
+			ctx.setVariable("date", image.getDate());
+			ctx.setVariable("description", image.getDescription());
+			ctx.setVariable("path", image.getPath());
 			User user = (User) session.getAttribute("utente");
 			ctx.setVariable("user", user.getUsername());
+			ctx.setVariable("pageNumber", pageNumber);
 			
 			// estraiamo i commenti dal database
 			List<Comment> comments = new ArrayList<Comment>();
 			CommentDAO commentDAO = new CommentDAO(connection);
 			
 			try {
-				comments = commentDAO.getImageComments(imageSelected.getID());
+				comments = commentDAO.getImageComments(image.getID());
 				ctx.setVariable("commenti", comments);
 			} catch (SQLException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare i commenti.");
-				e.printStackTrace();
 				return;
 			}
+			
 		}
 		
-		session.removeAttribute("commentAdded");
+		String path = "/WEB-INF/templates/AlbumPage";
+		ctx.setVariable("albumImages", albumImages);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

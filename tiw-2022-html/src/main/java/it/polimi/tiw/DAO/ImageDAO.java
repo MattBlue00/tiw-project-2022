@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Image;
 
 public class ImageDAO {

@@ -7,7 +7,7 @@
 	href="../CSS/stylesheet.css" th:href="@{/css/stylesheet.css}" />
 </head>
 <body>
-<h1>Visualizza l'album <span th:text="${session.albumTitle}"></span> di <span th:text="${session.albumOwner}">un utente</span></h1>
+<h1>Visualizza l'album <span th:text="${albumTitle}"></span> di <span th:text="${albumOwner}">un utente</span></h1>
 
 	<div>
 		<form name="homePage" method="POST" action="HomePage">
@@ -22,12 +22,12 @@
 		</form>
 	</div>
 	
-	<div>
+	<div th:with="pageNum=${pageNumber}">
 	<p class="emptyListMessage" th:if = "${#lists.isEmpty(albumImages)}">L'album non contiene nessuna immagine.</p>
 		<table class="albumList" th:if = "${not #lists.isEmpty(albumImages)}">
 		<tr>
 			<td th:each="i : ${albumImages}" class="image">
-			<a th:href="@{/AlbumPage(idImmagine=${i.id}, titoloImmagine=${i.imageTitle})}">  
+			<a th:href="@{/AlbumPage(idImmagine=${i.id}, titoloImmagine=${i.imageTitle}, pageNumber=${pageNum})}">  
 			<img th:src="@{/GetImage(imagePath=${i.path})}" alt="immagine" width="200" height="auto"></a>
 			</td>
 		</tr>
@@ -38,27 +38,43 @@
 		</table>
 	</div>
 	<br>
-	<div>
-		<form name="previous" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='previous')}" th:if="${session.previousButtonNeeded}">
+	<div th:with="pageNum=${pageNumber}">
+	
+		<span th:text="${pageNumber}">Numero di pagina</span>
+	
+		<form name="previous" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='previous', pageNumber=${pageNum})}" th:if="${previousButtonNeeded}">
   		<label class="previousButton">
   		<input type="submit" value="Precedenti" style="position: absolute; left: 0;">
   		</label>
   		</form>
-  		<form name="logout" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='next')}" th:if="${session.nextButtonNeeded}">
+  		
+  		<form name="logout" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='next', pageNumber=${pageNum})}" th:if="${nextButtonNeeded}">
   		<label class="nextButton">
   		<input type="submit" value="Successive" style="position: absolute; right: 0;">
   		</label>
 		</form>
 	</div>
+	
 	<br>
 	<br>
-	<div th:if = "${session.imageClicked}">
-		<div class="imageClicked" th:if = "${session.imageClicked}">
-		<img th:src="@{/GetImage(imagePath=${session.path})}" alt="immagine" th:if = "${session.imageClicked}">
+	
+	<div th:if = "${addImageAllowed}"> 
+	<form name="addImage" method="POST" action="#" th:action="@{/GoToAddImage}">
+  		<label class="addImageButton">
+  		<input type="submit" value="Aggiungi immagini">
+  		</label>
+  	</form>
+	</div>
+	
+	<br>
+	<br>
+	<div th:if = "${imageClicked}">
+		<div class="imageClicked" th:if = "${imageClicked}">
+		<img th:src="@{/GetImage(imagePath=${path})}" alt="immagine" th:if = "${imageClicked}">
 		</div>
 		<br>
-		<div th:if = "${session.imageClicked}">
-		<table class="imageInfo" th:if = "${session.imageClicked}">
+		<div th:if = "${imageClicked}">
+		<table class="imageInfo" th:if = "${imageClicked}">
 		<tr>
 			<th>Titolo immagine:</th><td th:text="${imageTitle}"></td>
 		</tr>
@@ -82,31 +98,34 @@
 		</div>
 	</div>
 	
-	<div th:if = "${session.imageClicked}">
+	<div th:if = "${imageClicked}">
 		<h2>Commenti:</h2>
-		<p class="emptyListComments" th:if = "${#lists.isEmpty(commenti)}">Non ci sono commenti.</p>
-		<table class="commentsList" th:if = "${not #lists.isEmpty(commenti)}">
-			<tr th:each="c : ${commenti}">
-				<td th:text="${c.owner}"></td>
-				<th>: </th>
-				<td th:text="${c.text}"></td>
-			</tr>
-		</table>
+		<fieldset style="height:100px; overflow-y: scroll; border:1px solid black;">
+			<p class="emptyListComments" th:if = "${#lists.isEmpty(commenti)}">Non ci sono commenti.</p>
+			<table class="commentsList" th:if = "${not #lists.isEmpty(commenti)}">
+				<tr><td><strong>Utente</strong></td>
+				<th> </th>
+				<td><strong>Commento</strong></td></tr>
+				<tr th:each="c : ${commenti}">
+					<td th:text="${c.owner}">:</td>
+					<th> </th>
+					<td th:text="${c.text}"></td>
+				</tr>
+			</table>
+		</fieldset>
 	</div>
 	
-	<div th:if = "${session.imageClicked}">
-		<h2>Aggiungi commento:</h2>
-		<fieldset>
-			<form th:action="@{/AddComment(id_immagine=${imageId}, utente=${user})}" method="POST">
-				<table>
-					<tr><td>
-					<textarea name="commentText" rows="4" cols="50" placeholder="Inserisci qui il tuo commento." maxlength="280" required ></textarea>
-					</td></tr>
-					<tr><td><input type="submit" value="Invia"></td></tr>
-					<tr><td colspan="2" th:text=" ${successMsg}"> </td></tr>
-				</table>
-			</form>
-		</fieldset>
+	<div th:if = "${imageClicked}" th:with="pageNum=${pageNumber}">
+	<h2>Aggiungi commento:</h2>
+		<form th:action="@{/AddComment(id_immagine=${imageId}, pageNumber=${pageNum})}" method="POST">
+			<table>
+				<tr><td>
+				<textarea name="commentText" rows="10" cols="100" placeholder="Inserisci qui il tuo commento." maxlength="280" required ></textarea>
+				</td></tr>
+				<tr><td><input type="submit" value="Invia"></td></tr>
+				<tr><td colspan="2" th:text=" ${successMsg}"> </td></tr>
+			</table>
+		</form>
 	</div>
 	
 </body>

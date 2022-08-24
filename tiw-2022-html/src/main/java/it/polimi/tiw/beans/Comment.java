@@ -1,7 +1,5 @@
 package it.polimi.tiw.beans;
 
-import java.sql.Timestamp;
-
 public class Comment {
 	
 	private String owner;

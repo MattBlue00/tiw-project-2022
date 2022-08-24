@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import it.polimi.tiw.beans.Album;
-import it.polimi.tiw.beans.User;
 
 public class AlbumDAO {
 	

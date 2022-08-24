@@ -3,58 +3,62 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Login</title>
-	<link rel="stylesheet" type="text/css" media="all"
-		href="css/mystyle.css" th:href="@{/css/mystyle.css}" />
+	<!-- <link rel="stylesheet" type="text/css" media="all"
+		href="css/mystyle.css" th:href="@{/css/mystyle.css}" /> -->
 </head>
 <body>
 	<div class="divLogin">
 		<h2 align="center">Benvenuto nella galleria immagini</h2>
 		<h4 align="center">Inserisci le credenziali per accedere</h4>
-		<form action="CheckLogin" method="POST">
-			<table class=loginTable>
-				<tr>
-					<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInseritoLogin}"></td>
-				</tr>
-				<tr>
-					<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
-				</tr>
-				<tr>			
-					<td colspan="2" th:text=" ${errorMsgLogin}"> </td>
-				</tr>
-				<tr>			
-					<td colspan="2"><input type="submit" value="Login"></td>
-				</tr>		
-			</table><br>
-		</form>
+			<form action="CheckLogin" method="POST">
+			<fieldset>
+				<table class=loginTable>
+					<tr>
+						<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInseritoLogin}"></td>
+					</tr>
+					<tr>
+						<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
+					</tr>
+					<tr>			
+						<td colspan="2" th:text=" ${errorMsgLogin}"> </td>
+					</tr>
+					<tr>			
+						<td colspan="2"><input type="submit" value="Login"></td>
+					</tr>		
+				</table>
+				</fieldset>
+			</form>
 	</div>
 
     <div class="divRegister">
         <h4 align="center">Qui puoi registrarti per accedere</h4>
-        <form action="CheckRegister" method="POST">
-			<table class=registerTable>
-				<tr>
-					<td><input type="email" name="email" placeholder="email" maxlength="100" required th:value=" ${emailInserita}"></td>
-				</tr>
-                <tr>
-					<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInserito}"></td>
-				</tr>
-				<tr>
-					<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
-				</tr>
-                <tr>
-					<td><input type="password" name="passwordRepeated" placeholder="ripeti password" maxlength="20" required></td>
-				</tr>
-				<tr>			
-					<td colspan="2" th:text=" ${errorMsgRegistration}"> </td>
-				</tr>
-				<tr>			
-					<td colspan="2" th:text=" ${successMsgRegistration}"> </td>
-				</tr>
-				<tr>			
-					<td colspan="2"><input type="submit" value="Register"></td>
-				</tr>		
-			</table><br>
-		</form>
+	        <form action="CheckRegister" method="POST">
+	        <fieldset>
+				<table class=registerTable>
+					<tr>
+						<td><input type="email" name="email" placeholder="email" maxlength="100" required th:value=" ${emailInserita}"></td>
+					</tr>
+	                <tr>
+						<td><input type="text" name="username" placeholder="username" maxlength="20" required th:value=" ${usernameInserito}"></td>
+					</tr>
+					<tr>
+						<td><input type="password" name="password" placeholder="password" maxlength="20" required></td>
+					</tr>
+	                <tr>
+						<td><input type="password" name="passwordRepeated" placeholder="ripeti password" maxlength="20" required></td>
+					</tr>
+					<tr>			
+						<td colspan="2" th:text=" ${errorMsgRegistration}"> </td>
+					</tr>
+					<tr>			
+						<td colspan="2" th:text=" ${successMsgRegistration}"> </td>
+					</tr>
+					<tr>			
+						<td colspan="2"><input type="submit" value="Register"></td>
+					</tr>		
+				</table>
+				</fieldset>
+			</form>
     </div>
 </body>
 </html>

@@ -28,9 +28,6 @@
 	
 <form name="CreateAlbum" method="POST" action="CreateAlbum">
 	<table class="createAlbumTable">
-	  	<tr>			
-			<td colspan="2" th:text=" ${errorMsg}"> </td>
-	  	</tr>
 	  	<tr>
 	  		<td>
 		  	<input type="text" name="title" placeholder="titolo album" maxlength="30" required >
@@ -42,6 +39,9 @@
 		  	<input type="submit" value="Crea un nuovo album">
 		  	</label>
 		  	</td>
+	  	</tr>
+	  	<tr>			
+			<td colspan="2" th:text=" ${errorMsg}"> </td>
 	  	</tr>
   	</table><br>
 </form>

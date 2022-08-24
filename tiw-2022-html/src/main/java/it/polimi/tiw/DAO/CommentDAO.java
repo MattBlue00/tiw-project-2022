@@ -43,7 +43,7 @@ public class CommentDAO {
 	 * @throws SQLException
 	 */
 	public int getCommentNumber(int imageId) throws SQLException {
-		String query = "SELECT COUNT(*) AS total FROM immagine WHERE id = ?";
+		String query = "SELECT COUNT(*) AS total FROM commento WHERE id_immagine = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageId);
 			try (ResultSet result = pstatement.executeQuery();) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -67,17 +68,18 @@ public class CreateAlbum extends HttpServlet {
 		try {
 			if(albumDao.checkAlbumTitle(album)) {
 				albumDao.createAlbum(album);
-				request.getSession().setAttribute("album", album);
+				session.setAttribute("album", album);
 				path = "/WEB-INF/templates/AddImage.html";
 				templateEngine.process(path, ctx, response.getWriter());
 			}
 			else {
-				request.getSession().setAttribute("titleWarning", Boolean.valueOf(true));
-				path = getServletContext().getContextPath() + "/HomePage";
-				response.sendRedirect(path);
+				path = "/HomePage";
+				request.setAttribute("titleWarning", Boolean.valueOf(true));
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+				dispatcher.forward(request, response);
 			}
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile creare l'album.\n");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile creare l'album.");
 			return;
 		}
 		

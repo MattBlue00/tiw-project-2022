@@ -23,8 +23,8 @@
 	</context-param>
 	<context-param>
     	<param-name>folderPath</param-name>
-    	<!--<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value> -->
-  		<param-value>/Users/tcalb/Desktop/tiw/immagini/</param-value>
+    	<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value>
+  		<!-- param-value>/Users/tca/Desktop/tiw/immagini/</param-value> -->
   	</context-param>
 
 	<filter> 
@@ -35,6 +35,7 @@
 	    <filter-name>AccessControl</filter-name> 
 	    <url-pattern>/AddComment</url-pattern>
 	    <url-pattern>/AddImage</url-pattern> 
+	    <url-pattern>/GoToAddImage</url-pattern>
 	    <url-pattern>/AlbumPage</url-pattern>
 	    <url-pattern>/CreateAlbum</url-pattern> 
 	    <url-pattern>/GetImage</url-pattern> 

@@ -3,6 +3,8 @@ package it.polimi.tiw.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.DAO.CommentDAO;
 import it.polimi.tiw.beans.Comment;
+import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
@@ -52,9 +54,7 @@ public class AddComment extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+
 		HttpSession session = request.getSession();
 		
 		String commentText = request.getParameter("commentText");
@@ -68,22 +68,24 @@ public class AddComment extends HttpServlet {
 		}
 		
 		Comment comment = new Comment();
+		User user = (User) session.getAttribute("utente");
 		comment.setImageId(Integer.valueOf(request.getParameter("id_immagine")));
-		comment.setOwner(request.getParameter("utente"));
+		comment.setOwner(user.getUsername());
 		comment.setText(commentText);
 		CommentDAO commentDAO = new CommentDAO(connection);
 		try {
 			commentDAO.createComment(comment);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha potuto salvare le informazioni relative al commento.");
+			e.printStackTrace();
 			return;
 		}
-		ctx.setVariable("successMsg", "Il commento è stato aggiunto correttamente.");
-		session.setAttribute("commentAdded", Boolean.valueOf(true));
-		String path = "/WEB-INF/templates/AlbumPage.html";
-		//templateEngine.process(path, ctx, response.getWriter());
-		path = getServletContext().getContextPath() + "/AlbumPage";
-		response.sendRedirect(path);
+		
+		String path = "/AlbumPage";
+		request.setAttribute("imageID", Integer.valueOf(request.getParameter("id_immagine")));
+		request.setAttribute("pageNumber", Integer.valueOf(request.getParameter("pageNumber")));
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+		dispatcher.forward(request, response);
 	}
 
 	/**
