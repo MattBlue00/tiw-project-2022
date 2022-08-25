@@ -47,6 +47,12 @@ public class CreateAlbum extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
+		doPost(request, response);
+		
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException{
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("utente");
 		ServletContext servletContext = getServletContext();
@@ -82,12 +88,6 @@ public class CreateAlbum extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile creare l'album.");
 			return;
 		}
-		
-	}
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-			throws ServletException, IOException{
-		doGet(request, response);
 	
 	}
 	
