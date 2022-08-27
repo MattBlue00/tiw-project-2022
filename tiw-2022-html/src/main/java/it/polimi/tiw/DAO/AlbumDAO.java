@@ -30,7 +30,7 @@ public class AlbumDAO {
 		return otherAlbums;
 	}
 	
-	private List<Album> buildAlbumList(String query, String username) throws SQLException {
+	private List<Album> buildAlbumList(String query, String username) throws SQLException{
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, username);
 			try (ResultSet result = pstatement.executeQuery();) {
@@ -42,6 +42,8 @@ public class AlbumDAO {
 						Album album = new Album();
 						album.setOwner(result.getString("proprietario"));
 						album.setTitle(result.getString("titolo"));
+						album.setCreationDate(result.getTimestamp("data_creazione"));
+						
 						albums.add(album);
 					}
 					return albums;

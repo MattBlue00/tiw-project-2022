@@ -70,12 +70,12 @@ public class AlbumPage extends HttpServlet {
 		int pageNumber = -1;
 		
 		// entriamo in questo if ogni volta che selezioniamo (clicchiamo) un album
-		if(request.getParameter("titoloAlbum") != null && request.getParameter("proprietarioAlbum") != null) {
+		if(request.getAttribute("titoloAlbum") != null && request.getAttribute("proprietarioAlbum") != null) {
 			String albumTitle, albumOwner;
 			Album album = new Album();
-			
-			albumTitle = request.getParameter("titoloAlbum");
-			albumOwner = request.getParameter("proprietarioAlbum");
+
+			albumTitle = (String) request.getAttribute("titoloAlbum");
+			albumOwner = (String) request.getAttribute("proprietarioAlbum");
 			album.setOwner(albumOwner);
 			album.setTitle(albumTitle);
 			session.setAttribute("album", album);
