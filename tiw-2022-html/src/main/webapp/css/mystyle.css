@@ -88,11 +88,11 @@
 }
 .homePageButton{
 	position: absolute;
-	left: 5px;
+	left: 6px;
 }
 .logoutButton{
 	position: absolute;
-	right: 5px;
+	right: 6px;
 }
 #loginButton, #registrationButton{
 	margin: auto;
@@ -120,8 +120,8 @@
 	padding: 10px;
 }
 #imageInfo, #commentsList{
-	border-collapse:separate;
-    border-radius:6px;
+	border-collapse: separate;
+    border-radius: 6px;
     margin-left: auto;
   	margin-right: auto;
   	border: 1px solid #469fd3;
