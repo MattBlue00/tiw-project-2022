@@ -84,6 +84,26 @@ public class ImageDAO {
 		}
 	}
 	
+	public List<Integer> getImageIDsFromTitle(String albumOwner, String albumTitle, String imageTitle) throws SQLException {
+		String query = "SELECT * FROM immagine WHERE proprietario_album = ? AND titolo_album = ? AND titolo_immagine = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, albumOwner);
+			pstatement.setString(2, albumTitle);
+			pstatement.setString(3, imageTitle);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst()) // no results
+					return Collections.emptyList();
+				else {
+					List<Integer> IDs = new ArrayList<>();
+					while(result.next()) {
+						IDs.add(result.getInt("id"));
+					}
+					return IDs;
+				}
+			}
+		}
+	}
+	
 	public void createImage(Image image) throws SQLException {
 		String query = "INSERT INTO immagine (proprietario_album, titolo_album, titolo_immagine, data, descrizione, path) VALUES(?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {

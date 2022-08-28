@@ -51,9 +51,18 @@ public class GetImage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		String imagePath = request.getParameter("imagePath");
+		if(imagePath == null || imagePath.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
+			return;
+		}
 		File file = new File(imagePath);
 		// copy file to output stream
-		Files.copy(file.toPath(), response.getOutputStream());
+		try {
+			Files.copy(file.toPath(), response.getOutputStream());
+		} catch(IOException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Il path fornito non esiste.");
+			return;
+		}
 	}
 
 	/**

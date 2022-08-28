@@ -58,14 +58,8 @@ public class CheckRegister extends HttpServlet{
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String passwordRepeated = request.getParameter("passwordRepeated");
-        if(username.contains(" ") || email.contains(" ") || password.contains(" ") || 
-        		passwordRepeated.contains(" ")) {
-        	ctx.setVariable("errorMsgRegistration", "Non è possibile inserire spazi vuoti.");
-        }
-        else if(!CheckRegister.isEmailValid(email)) {
-        	ctx.setVariable("errorMsgRegistration", "La mail inserita non è valida.");	
-        }
-    	else if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
+        
+    	if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
 		            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
 			return;
@@ -75,6 +69,13 @@ public class CheckRegister extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori inseriti troppo lunghi.");
 			return;
 		}
+    	else if(username.contains(" ") || email.contains(" ") || password.contains(" ") || 
+        		passwordRepeated.contains(" ")) {
+        	ctx.setVariable("errorMsgRegistration", "Non è possibile inserire spazi vuoti.");
+        }
+        else if(!CheckRegister.isEmailValid(email)) {
+        	ctx.setVariable("errorMsgRegistration", "La mail inserita non è valida.");	
+        }
     	else {		
 			UserDAO userDao = new UserDAO(connection);
 			User user = new User();

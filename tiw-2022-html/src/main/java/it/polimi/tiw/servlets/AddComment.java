@@ -18,6 +18,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.DAO.CommentDAO;
+import it.polimi.tiw.DAO.ImageDAO;
 import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
@@ -56,6 +57,15 @@ public class AddComment extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
+		ImageDAO imageDAO = new ImageDAO(connection);
+		int idLimit;
+		
+		try {
+			idLimit = imageDAO.getImageID();
+		} catch(SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha risposto correttamente.");
+			return;
+		}
 		
 		String commentText = request.getParameter("commentText");
 		if(commentText == null || commentText.isEmpty()) {
@@ -64,6 +74,17 @@ public class AddComment extends HttpServlet {
 		}
 		if(commentText.length() > Constants.COMMENT_MAX_LENGTH) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito troppo lungo.");
+			return;
+		}
+		
+		try {
+			if(request.getParameter("id_immagine") == null || Integer.valueOf(request.getParameter("id_immagine")) < 1 ||
+					Integer.valueOf(request.getParameter("id_immagine")) >= idLimit) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
+				return;
+			}
+		} catch(NumberFormatException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
 			return;
 		}
 		
@@ -77,13 +98,17 @@ public class AddComment extends HttpServlet {
 			commentDAO.createComment(comment);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha potuto salvare le informazioni relative al commento.");
-			e.printStackTrace();
 			return;
 		}
 		
 		String path = "/AlbumPage";
 		request.setAttribute("imageID", Integer.valueOf(request.getParameter("id_immagine")));
-		request.setAttribute("pageNumber", Integer.valueOf(request.getParameter("pageNumber")));
+		try {
+			request.setAttribute("pageNumber", Integer.valueOf(request.getParameter("pageNumber")));
+		} catch(NumberFormatException | NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
+			return;
+		}
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}

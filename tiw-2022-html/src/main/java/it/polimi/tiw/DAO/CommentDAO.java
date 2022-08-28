@@ -66,7 +66,7 @@ public class CommentDAO {
 	 * @throws SQLException
 	 */
 	public List<Comment> getImageComments(int imageId) throws SQLException {
-		String query = "SELECT * FROM commento WHERE id_immagine = ?";
+		String query = "SELECT * FROM commento WHERE id_immagine = ? ORDER BY numero_commento ASC";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageId);
 			try (ResultSet result = pstatement.executeQuery();) {

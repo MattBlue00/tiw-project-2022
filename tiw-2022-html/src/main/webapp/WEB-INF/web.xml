@@ -23,8 +23,8 @@
 	</context-param>
 	<context-param>
     	<param-name>folderPath</param-name>
-    	<param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value> 
-  		<!-- <param-value>/Users/tca/Desktop/tiw/immagini/</param-value> -->
+    	<!-- <param-value>/Users/matteospreafico/Desktop/Tecnologie Informatiche per il Web/Immagini/</param-value>  -->
+  		<param-value>/Users/tca/Desktop/tiw/immagini/</param-value>
   	</context-param>
 
 	<filter> 

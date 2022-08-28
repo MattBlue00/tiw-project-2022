@@ -17,6 +17,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.polimi.tiw.DAO.AlbumDAO;
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.utils.ConnectionHandler;
 
@@ -59,10 +60,25 @@ public class GoToAlbumPage extends HttpServlet {
 		
 		albumTitle = request.getParameter("titoloAlbum");
 		albumOwner = request.getParameter("proprietarioAlbum");
+		if(albumTitle == null || albumOwner ==  null || albumTitle.isEmpty() || albumOwner.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
+			return;
+		}
 		request.setAttribute("titoloAlbum", albumTitle);
 		request.setAttribute("proprietarioAlbum", albumOwner);
 		album.setOwner(albumOwner);
 		album.setTitle(albumTitle);
+		AlbumDAO albumDAO = new AlbumDAO(connection);
+		try {
+			if(albumDAO.checkAlbumTitle(album)) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album non esistente.");
+				return;
+			}
+		} catch (SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile cercare l'album.");
+			return;
+		}
+		
 		session.setAttribute("album", album);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 		dispatcher.forward(request, response);

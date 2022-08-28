@@ -78,7 +78,6 @@ public class AlbumPage extends HttpServlet {
 			albumOwner = (String) request.getAttribute("proprietarioAlbum");
 			album.setOwner(albumOwner);
 			album.setTitle(albumTitle);
-			session.setAttribute("album", album);
 			ctx.setVariable("pageNumber", 1);
 			pageNumber = 1;
 		}
@@ -86,11 +85,25 @@ public class AlbumPage extends HttpServlet {
 		// prendiamo il valore di pageNumber
 		else {
 			if(request.getParameter("pageNumber") != null) {
-				pageNumber = Integer.valueOf(request.getParameter("pageNumber"));
+				try {
+					pageNumber = Integer.valueOf(request.getParameter("pageNumber"));
+				} catch(NumberFormatException e){
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+					return;
+				}
 			}
-			else {
+			else if(request.getAttribute("pageNumber") != null){
 				pageNumber = (int) request.getAttribute("pageNumber");
 			}
+			else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri scorretti.");
+				return;
+			}
+		}
+		
+		if(pageNumber < 1 ) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+			return;
 		}
 		
 		Album album = (Album) session.getAttribute("album");
@@ -124,21 +137,34 @@ public class AlbumPage extends HttpServlet {
 				pageNumber--;
 				ctx.setVariable("pageNumber", pageNumber);
 				}
-			else {
+			else if(((String) request.getParameter("buttonValue")).equalsIgnoreCase("next")){
 				pageNumber++;
 				ctx.setVariable("pageNumber", pageNumber);
+			}
+			else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+				return;
 			}
 				
 		}
 		
 		// mostriamo 5 immagini alla volta
 		int listLength = albumImages.size();
+		if(Math.ceil((double) listLength / MAX_NUM_IMAGES) < pageNumber && listLength != 0) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+			return;
+		}
 		int firstImageIndex = (pageNumber - 1)* MAX_NUM_IMAGES;
 		int lastImageIndex = pageNumber * MAX_NUM_IMAGES;
 		if(listLength > MAX_NUM_IMAGES) {
 			if(lastImageIndex > listLength)
 				lastImageIndex = listLength;
+			try {
 			albumImages = albumImages.subList(firstImageIndex, lastImageIndex);
+			} catch(IndexOutOfBoundsException e){
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+				return;
+			}
 		}
 		
 		if(firstImageIndex >= MAX_NUM_IMAGES) {
@@ -166,17 +192,34 @@ public class AlbumPage extends HttpServlet {
 		}
 		
 		if(request.getParameter("idImmagine") != null) {
-			imageId = Integer.valueOf(request.getParameter("idImmagine"));
+			try {
+				imageId = Integer.valueOf(request.getParameter("idImmagine"));
+			}catch(NumberFormatException e) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
+				return;
+			}
 		}
 		
+		if(request.getParameter("titoloImmagine") == null && request.getAttribute("titoloAlbum") == null &&
+				request.getParameter("buttonValue") == null && request.getAttribute("imageID") == null) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri scorretti.");
+			return;
+		}
+		
+		List<Integer> checkImageID = null;
 		if(imageId != null ) {
 			ctx.setVariable("imageClicked", Boolean.valueOf(true));
 			try {
 				image = imageDAO.getImageFromId(imageId);
-				
+				checkImageID = imageDAO.getImageIDsFromTitle(album.getOwner(), album.getTitle(), request.getParameter("titoloImmagine"));
 			} catch (NumberFormatException | SQLException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare l'immagine.");
-				e.printStackTrace();
+				return;
+			}
+			if(image == null || (!image.getImageTitle().equals(request.getParameter("titoloImmagine")) && 
+					request.getAttribute("imageID") == null) ||
+					(!checkImageID.contains(image.getID()) && request.getAttribute("imageID") == null)) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare l'immagine.");
 				return;
 			}
 			
@@ -205,6 +248,11 @@ public class AlbumPage extends HttpServlet {
 				return;
 			}
 			
+		}
+		else if(request.getAttribute("titoloAlbum") == null && request.getParameter("buttonValue") == null &&
+				request.getAttribute("imageID") == null){
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri scorretti.");
+			return;
 		}
 		
 		String path = "/WEB-INF/templates/AlbumPage";
