@@ -28,91 +28,90 @@
 	<div th:with="pageNum=${pageNumber}" align="center">
 		<p class="emptyListMessage" th:if = "${#lists.isEmpty(albumImages)}">L'album non contiene nessuna immagine.</p>
 		<table id="imagesTable" class="imagesTable" th:if = "${not #lists.isEmpty(albumImages)}">
-		<tr>
-			<td>
-				<form id="previousButton" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='previous', pageNumber=${pageNum})}" th:if="${previousButtonNeeded}">
-  					<label class="previousButton">
-  						<input type="submit" value="Precedenti" class="button">
-  					</label>
-  				</form>
-			</td>
-			<td th:each="i : ${albumImages}" class="image">
-				<a th:href="@{/AlbumPage(idImmagine=${i.id}, titoloImmagine=${i.imageTitle}, pageNumber=${pageNum})}">  
-				<img id="image" th:src="@{/GetImage(imagePath=${i.path})}" alt="immagine" width="150" height="auto"></a>
-			</td>
-			<td>
-				<form id="nextButton" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='next', pageNumber=${pageNum})}" th:if="${nextButtonNeeded}">
-  					<label class="nextButton">
-  						<input type="submit" value="Successive" class="button">
-  					</label>
-				</form>
-			</td>
-		</tr>
-		<tr> 
-			<td></td>
-			<td id="imageTitle" align="center" th:each="i : ${albumImages}" class="imageTitle" th:text="${i.imageTitle}"> 
-			</td>
-		</tr>
+			<tr>
+				<td>
+					<form id="previousButton" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='previous', pageNumber=${pageNum})}" th:if="${previousButtonNeeded}">
+	  					<label class="previousButton">
+	  						<input type="submit" value="Precedenti" class="button">
+	  					</label>
+	  				</form>
+				</td>
+				<td th:each="i : ${albumImages}" class="image">
+					<a th:href="@{/AlbumPage(idImmagine=${i.id}, titoloImmagine=${i.imageTitle}, pageNumber=${pageNum})}">  
+					<img id="image" th:src="@{/GetImage(imagePath=${i.path})}" alt="immagine" width="150" height="auto"></a>
+				</td>
+				<td>
+					<form id="nextButton" method="POST" action="#" th:action="@{/AlbumPage(buttonValue='next', pageNumber=${pageNum})}" th:if="${nextButtonNeeded}">
+	  					<label class="nextButton">
+	  						<input type="submit" value="Successive" class="button">
+	  					</label>
+					</form>
+				</td>
+			</tr>
+			<tr> 
+				<td></td>
+				<td id="imageTitle" align="center" th:each="i : ${albumImages}" class="imageTitle" th:text="${i.imageTitle}"> 
+				</td>
+			</tr>
 		</table>
 	</div>
 
 	<br>
 	
 	<div th:with="pageNum=${pageNumber}">
-		<div align="center"><span th:text="${pageNumber}" id="pageNumber">Numero di pagina</span></div>
+		<div align="center">
+			<span th:text="${pageNumber}" id="pageNumber">Numero di pagina</span>
+		</div>
 	</div> 
 	
-	<br>
-	<br>
+	<br><br>
 	
 	<div th:if = "${addImageAllowed}"> 
-	<form id="addImage" method="POST" action="#" th:action="@{/GoToAddImage}">
-  		<label class="addImageButton">
-  		<input type="submit" value="Aggiungi immagini" class="button">
-  		</label>
-  	</form>
+		<form id="addImage" method="POST" action="#" th:action="@{/GoToAddImage}">
+	  		<label class="addImageButton">
+	  			<input type="submit" value="Aggiungi immagini" class="button">
+	  		</label>
+	  	</form>
 	</div>
 	
-	<br>
-	<br>
+	<br><br>
+	
 	<div th:if = "${imageClicked}" align="center">
 		<div class="imageClicked" th:if = "${imageClicked}">
-		<img th:src="@{/GetImage(imagePath=${path})}" alt="immagine" th:if = "${imageClicked}">
+			<img th:src="@{/GetImage(imagePath=${path})}" alt="immagine" th:if = "${imageClicked}">
 		</div>
 		<br>
 		<div th:if = "${imageClicked}">
-		<fieldset> 
-		<legend >Dettagli immagine</legend>
-		<table class="text" th:if = "${imageClicked}">
-		<tr>
-			<th>Titolo immagine</th><td th:text="${imageTitle}"></td>
-		</tr>
-		<tr>
-			<th>Proprietario dell'immagine</th><td th:text="${albumOwner}"></td>
-		</tr>
-		<tr>
-			<th>Album a cui appartiene</th><td th:text="${albumTitle}"></td>
-		</tr>
-		<tr>
-			<th>Data crezione</th><td th:text="${date}"></td>
-		</tr>
-		<tr>
-			<th>Descrizione</th><td th:text="${description}"></td>
-		</tr>
-		<tr>
-			<th>Percorso</th><td th:text="${path}"></td>
-		</tr>
-		
-		</table>
-		</fieldset>
+			<fieldset> 
+				<legend >Dettagli immagine</legend>
+				<table class="text" th:if = "${imageClicked}">
+					<tr>
+						<th>Titolo immagine</th><td th:text="${imageTitle}"></td>
+					</tr>
+					<tr>
+						<th>Proprietario dell'immagine</th><td th:text="${albumOwner}"></td>
+					</tr>
+					<tr>
+						<th>Album a cui appartiene</th><td th:text="${albumTitle}"></td>
+					</tr>
+					<tr>
+						<th>Data crezione</th><td th:text="${date}"></td>
+					</tr>
+					<tr>
+						<th>Descrizione</th><td th:text="${description}"></td>
+					</tr>
+					<tr>
+						<th>Percorso</th><td th:text="${path}"></td>
+					</tr>
+				</table>
+			</fieldset>
 		</div>
 	</div>
 	
 	<br><br>
 	
 	<div th:if = "${imageClicked}" class="commentsList" align="center">
-		<fieldset style=
-            			"height:150px; overflow-y: scroll; border: 1px solid #469fd3;
+		<fieldset style="height:150px; overflow-y: scroll; border: 1px solid #469fd3;
             			border-radius: 4px; font-family: Arial, Helvetica, sans-serif;
             			resize: none;" id="commentsContainer">
 			<legend>Commenti</legend>
@@ -123,7 +122,7 @@
 				<td class="text"><strong>Commento</strong></td></tr>
 				<tr th:each="c : ${commenti}">
 					<td class="text" th:text="${c.author}">:</td>
-					<th> </th>
+					<th></th>
 					<td class="text" th:text="${c.text}"></td>
 				</tr>
 			</table>
@@ -133,18 +132,21 @@
 	<br><br>
 	
 	<div th:if = "${imageClicked}" th:with="pageNum=${pageNumber}" align="center">
-	<fieldset>
-		<legend >Aggiungi commento</legend>
-		<form th:action="@{/AddComment(id_immagine=${imageId}, pageNumber=${pageNum})}" method="POST" id="addCommentContainer">
-			<table>
-				<tr><td>
-				<textarea name="commentText" rows="10" cols="100" placeholder="Inserisci qui il tuo commento." maxlength="280" required ></textarea>
-				</td></tr>
-				<tr><td><input type="submit" value="Invia" class="button"></td></tr>
-				<tr><td th:text="${successMsg}" class="success"></td></tr>
-			</table>
-		</form>
-	</fieldset>
+		<fieldset>
+			<legend >Aggiungi commento</legend>
+			<form th:action="@{/AddComment(id_immagine=${imageId}, pageNumber=${pageNum})}" method="POST" id="addCommentContainer">
+				<table>
+					<tr>
+						<td><textarea name="commentText" rows="10" cols="100" placeholder="Inserisci qui il tuo commento." maxlength="280" required ></textarea>
+					</td></tr>
+					<tr>
+						<td><input type="submit" value="Invia" class="button"></td></tr>
+					<tr>
+						<td th:text="${successMsg}" class="success">
+					</td></tr>
+				</table>
+			</form>
+		</fieldset>
 	</div>
 	
 </body>

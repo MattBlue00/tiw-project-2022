@@ -9,7 +9,7 @@
 <body>
 	<div class="divLogin" align="center">
 		<h1 class="welcomeText" align="center">GALLERIA IMMAGINI</h1>
-			<form action="CheckLogin" method="POST">
+		<form action="CheckLogin" method="POST">
 			<fieldset>
 				<legend >Accedi all'applicazione</legend>
 				<table class=loginTable>
@@ -24,14 +24,14 @@
 					</tr>		
 				</table>
 				<p id="errorMsgLogin" class="error" th:text="${errorMsgLogin}"> </p>
-				</fieldset>
-			</form>
+			</fieldset>
+		</form>
 	</div>
 	
 	<br>
 
     <div class="divRegister" align="center">
-	        <form action="CheckRegister" method="POST">
+		<form action="CheckRegister" method="POST">
 	        <fieldset>
 	        	<legend >Nuovo utente? Registrati qui!</legend>
 				<table class=registerTable>
@@ -53,8 +53,8 @@
 				</table>
 				<p id="successMsgRegistration" class="success" th:text="${successMsgRegistration}"></p>
 				<p id="errorMsgRegistration" class="error" th:text="${errorMsgRegistration}"></p>
-				</fieldset>
-			</form>
+			</fieldset>
+		</form>
     </div>
 </body>
 </html>
