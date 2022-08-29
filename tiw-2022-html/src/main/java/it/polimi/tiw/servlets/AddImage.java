@@ -35,7 +35,7 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
 /**
- * Servlet implementation class CreateAlbum
+ * Servlet che si occupa dell'aggiunta di un'immagine in un album.
  */
 
 @WebServlet("/AddImage")
@@ -47,12 +47,8 @@ public class AddImage extends HttpServlet {
 	private TemplateEngine templateEngine;
     private String imagePath = null;
     
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public AddImage() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init() throws ServletException {
@@ -63,21 +59,15 @@ public class AddImage extends HttpServlet {
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
-		// starting path for saving images' files
+		// path della cartella in cui salvare le immagini
     	imagePath = getServletContext().getInitParameter("folderPath");
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		doPost(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
@@ -86,6 +76,8 @@ public class AddImage extends HttpServlet {
         
 		String imageTitle = (String) request.getParameter("imageTitle");
 		String imageDescription = (String) request.getParameter("imageDescription");
+		
+		// controllo di integrità sui parametri "imageTitle" e "imageDescription"
 		if(imageTitle == null || imageDescription == null || imageTitle.isEmpty() || imageDescription.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori mancanti o inesistenti.");
 			return;
@@ -96,20 +88,20 @@ public class AddImage extends HttpServlet {
 		}
 		
 		Part filePart = request.getPart("image");
-		// the parameter needed must be present
+		// controllo di integrità sul file "image"
 		if (filePart == null || filePart.getSize() <= 0) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File mancante o inesistente.");
 			return;
 		}
 		
-		// the file must be an image
+		// il file deve essere un'immagine
 		String contentType = filePart.getContentType();
 		if (!contentType.startsWith("image")) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Il file non è un'immagine.");
 			return;
 		}
 		
-		// the image must be readable
+		// il file deve essere un'immagine leggibile
 		try(InputStream fileContent = filePart.getInputStream()){
 			ImageIO.read(fileContent);
 		}
@@ -118,6 +110,7 @@ public class AddImage extends HttpServlet {
 			return;
 		}
 		
+		// ottenimento dell'ID da assegnare all'immagine
 		ImageDAO imageDao = new ImageDAO(this.connection);
 		int imageID;
 		try {
@@ -126,9 +119,9 @@ public class AddImage extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il database non ha risposto correttamente.\n");
 			return;
 		}
-		String imageOutputPath = imagePath + String.valueOf(imageID);
 		
-		// save image in the file system
+		// salvataggio dell'immagine nel file system
+		String imageOutputPath = imagePath + String.valueOf(imageID);
 		File imageFile = new File(imageOutputPath);
 		try(InputStream fileContent = filePart.getInputStream()) {
 			Files.copy(fileContent, imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -137,9 +130,9 @@ public class AddImage extends HttpServlet {
 			return;
 		}
 		
+		// creazione dell'istanza di Image da salvare nel database
 		BasicFileAttributes attributes = 
 				Files.readAttributes(Paths.get(imageOutputPath), BasicFileAttributes.class);
-		
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("utente");
 		Album album = (Album) session.getAttribute("album");
@@ -151,6 +144,8 @@ public class AddImage extends HttpServlet {
 		image.setDate(new Timestamp(attributes.creationTime().toMillis()));
 		image.setDescription(imageDescription);
 		image.setPath(imageOutputPath);
+		
+		// salvataggio dei dati dell'immagine nel database
 		try {
 			imageDao.createImage(image);
 		} catch (SQLException e) {
@@ -158,6 +153,7 @@ public class AddImage extends HttpServlet {
 			return;
 		}
 		
+		// aggiornamento della pagina AddImage
 		ctx.setVariable("successMsg", "L'immagine \"" + image.getImageTitle() + "\" è stata aggiunta correttamente.");
 		String path = "/WEB-INF/templates/AddImage.html";
 		templateEngine.process(path, ctx, response.getWriter());

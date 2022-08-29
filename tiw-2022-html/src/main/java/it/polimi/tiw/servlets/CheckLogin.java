@@ -20,6 +20,10 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
+/**
+ * Servlet che si occupa del login di un utente.
+ */
+
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet {
 	
@@ -29,7 +33,6 @@ public class CheckLogin extends HttpServlet {
 
 	public CheckLogin() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {
@@ -55,6 +58,8 @@ public class CheckLogin extends HttpServlet {
 		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		
+		// controllo di integrità sui parametri della richiesta
 		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
 			return;
@@ -64,6 +69,7 @@ public class CheckLogin extends HttpServlet {
 			return;
 		}
 		
+		// controlla se è possibile far loggare l'utente con l'username e la password fornite
 		UserDAO userDao = new UserDAO(connection);
 		User user = null;
 		try {
@@ -73,6 +79,8 @@ public class CheckLogin extends HttpServlet {
 			return;
 		}
 		
+		// in base all'esito del login, redirige l'utente alla HomePage o nuovamente alla
+		// login page
 		String path;
 		if (user == null) {
 			ctx.setVariable("errorMsgLogin", "Username o password errata");

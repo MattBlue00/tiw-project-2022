@@ -1,5 +1,10 @@
 package it.polimi.tiw.beans;
 
+/**
+ * Classe che contiene tutte le informazioni d'interesse relative a un utente. Rispecchia
+ * perfettamente l'analoga tabella del database.
+ */
+
 public class User {
 
 	private String username;

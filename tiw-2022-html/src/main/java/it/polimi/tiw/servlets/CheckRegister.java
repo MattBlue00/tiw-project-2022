@@ -22,6 +22,10 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
+/**
+ * Servlet che si occupa della registrazione di un utente.
+ */
+
 @WebServlet("/CheckRegister")
 public class CheckRegister extends HttpServlet{
 	
@@ -59,6 +63,7 @@ public class CheckRegister extends HttpServlet{
         String password = request.getParameter("password");
         String passwordRepeated = request.getParameter("passwordRepeated");
         
+        // controllo di integrità sui parametri della richiesta
     	if (email == null || username == null || password == null || passwordRepeated == null || email.isEmpty() || 
 		            username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Credenziali mancanti o inesistenti.");
@@ -76,6 +81,7 @@ public class CheckRegister extends HttpServlet{
         else if(!CheckRegister.isEmailValid(email)) {
         	ctx.setVariable("errorMsgRegistration", "La mail inserita non è valida.");	
         }
+    	// se i controlli sono stati tutti superati, si entra nell'else
     	else {		
 			UserDAO userDao = new UserDAO(connection);
 			User user = new User();
@@ -83,6 +89,7 @@ public class CheckRegister extends HttpServlet{
 			user.setPassword(password);
 			user.setEmail(email);
 			boolean checkCredentialsDone = false;
+			// controlla che l'username e la email fornite siano entrambe uniche nel database
 			try {
 				checkCredentialsDone = userDao.checkCredentialsRegistration(email, username);
 				if(checkCredentialsDone && password.equals(passwordRepeated)) {
@@ -102,7 +109,9 @@ public class CheckRegister extends HttpServlet{
 				return;
 			}
     	}
-			
+		
+    	// sia in caso di successo che in caso di fallimento della registrazione, si torna
+    	// alla login page
 		String path = "/login.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}
@@ -114,6 +123,13 @@ public class CheckRegister extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Verifica, tramite una regex, che la email fornita sia ben formata.
+	 * 
+	 * @param email la mail da controllare.
+	 * @return {@code true} se la email è ben formata, {@code false} altrimenti.
+	 */
 	
 	private static boolean isEmailValid(String email) {			
 		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+

@@ -10,6 +10,11 @@ import java.util.List;
 
 import it.polimi.tiw.beans.Image;
 
+/**
+ * Data Access Object che permette l'interrogazione e l'aggiornamento della tabella "immagine"
+ * del database.
+ */
+
 public class ImageDAO {
 	
 	private Connection connection;
@@ -18,12 +23,20 @@ public class ImageDAO {
 		this.connection = connection;
 	}
 	
+	/**
+	 * Interroga il database per scoprire quante immagini sono già presenti, dunque fornisce
+	 * il più piccolo numero progessivo disponibile da utilizzare come identificativo per
+	 * un'immagine.
+	 * 
+	 * @return l'ID dell'immagine.
+	 * @throws SQLException se ci sono errori col database.
+	 */
+	
 	public int getImageID() throws SQLException {
 		String query = "SELECT COUNT(*) AS total FROM immagine";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst()) // no results
-					// TODO is this the right thing to do?
+				if (!result.isBeforeFirst()) // non ci sono risultati
 					return 1;
 				else {
 					result.next();
@@ -33,6 +46,15 @@ public class ImageDAO {
 			}
 		}
 	}
+	
+	/**
+	 * Date le chiavi di un album, ottiene tutte le immagini in esso contenute.
+	 * 
+	 * @param albumOwner proprietario dell'album.
+	 * @param albumTitle titolo dell'album.
+	 * @return la lista di immagini.
+	 * @throws SQLException se ci sono errori col database.
+	 */
 	
 	public List<Image> getAlbumImages(String albumOwner, String albumTitle) throws SQLException {
 		String query = "SELECT * FROM immagine WHERE proprietario_album = ? AND titolo_album = ? ORDER BY data DESC";
@@ -61,12 +83,20 @@ public class ImageDAO {
 		}
 	}
 	
+	/**
+	 * Dato l'ID di un'immagine, restituisce l'immagine stessa.
+	 * 
+	 * @param imageId l'ID dell'immagine desiderata.
+	 * @return l'istanza di immagine desiderata.
+	 * @throws SQLException se ci sono errori col database.
+	 */
+	
 	public Image getImageFromId(int imageId) throws SQLException{
 		String query = "SELECT * FROM immagine WHERE id = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageId);
 			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst()) // no results
+				if (!result.isBeforeFirst()) // non ci sono risultati
 					return null;
 				else {
 					result.next();
@@ -84,6 +114,20 @@ public class ImageDAO {
 		}
 	}
 	
+	/**
+	 * Date le chiavi di un album e il titolo di un'immagine, restituisce tutti i possibili ID
+	 * ad essi associati. In altre parole, ritorna una lista con tutti gli ID delle immagini
+	 * che condividono il medesimo album e il medesimo titolo. Questo metodo viene utilizzato
+	 * per aumentare la sicurezza dell'applicazione in caso di chiamate a servlet irregolari
+	 * mediante le query string.
+	 * 
+	 * @param albumOwner proprietario dell'album.
+	 * @param albumTitle titolo dell'album.
+	 * @param imageTitle titolo dell'immagine.
+	 * @return la lista degli ID eventualmente presenti nel database.
+	 * @throws SQLException se ci sono errori col database.
+	 */
+	
 	public List<Integer> getImageIDsFromTitle(String albumOwner, String albumTitle, String imageTitle) throws SQLException {
 		String query = "SELECT * FROM immagine WHERE proprietario_album = ? AND titolo_album = ? AND titolo_immagine = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
@@ -91,7 +135,7 @@ public class ImageDAO {
 			pstatement.setString(2, albumTitle);
 			pstatement.setString(3, imageTitle);
 			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst()) // no results
+				if (!result.isBeforeFirst()) // non ci sono risultati
 					return Collections.emptyList();
 				else {
 					List<Integer> IDs = new ArrayList<>();
@@ -103,6 +147,14 @@ public class ImageDAO {
 			}
 		}
 	}
+	
+	/**
+	 * Aggiunge una nuova riga nella tabella "immagine" del database, grazie alle informazioni
+	 * contenute nel parametro.
+	 * 
+	 * @param image variabile contenente le informazioni da salvare nel database.
+	 * @throws SQLException se ci sono errori col database.
+	 */
 	
 	public void createImage(Image image) throws SQLException {
 		String query = "INSERT INTO immagine (proprietario_album, titolo_album, titolo_immagine, data, descrizione, path) VALUES(?, ?, ?, ?, ?, ?)";

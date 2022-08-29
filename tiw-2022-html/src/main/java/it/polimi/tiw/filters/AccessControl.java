@@ -14,28 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet Filter implementation class AccessControl
+ * Filtro che controlla che l'utente non abbia accesso a pagine dell'applicazione diverse dalla
+ * pagina di login se non è correttamente loggato.
  */
+
 @WebFilter("/AccessControl")
 public class AccessControl extends HttpFilter implements Filter {
 	private static final long serialVersionUID = 1L;
 
-	/**
-     * @see HttpFilter#HttpFilter()
-     */
     public AccessControl() {
         super();
     }
 
-	/**
-	 * @see Filter#destroy()
-	 */
 	public void destroy() {
 	}
 
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
@@ -47,13 +40,10 @@ public class AccessControl extends HttpFilter implements Filter {
 			res.sendRedirect(loginPath);
 			return;
 		}
-		// pass the request along the filter chain
+		// se l'utente è regolarmente loggato, la filter chain può proseguire
 		chain.doFilter(request, response);
 	}
 
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
 	public void init(FilterConfig fConfig) throws ServletException {
 	}
 

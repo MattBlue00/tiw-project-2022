@@ -2,6 +2,11 @@ package it.polimi.tiw.beans;
 
 import java.sql.Timestamp;
 
+/**
+ * Classe che contiene tutte le informazioni d'interesse relative a un album. Rispecchia
+ * perfettamente l'analoga tabella del database.
+ */
+
 public class Album {
 	
 	private String owner;

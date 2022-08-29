@@ -20,17 +20,15 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.utils.ConnectionHandler;
 
 /**
- * Servlet implementation class GetImage
+ * Servlet che si occupa dell'ottenimento di un'immagine e di tutti i suoi dettagli.
  */
+
 @WebServlet("/GetImage")
 public class GetImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public GetImage() {
         super();
     }
@@ -45,18 +43,18 @@ public class GetImage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
     
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
+		
 		String imagePath = request.getParameter("imagePath");
+		// controllo di integrità sul parametro "imagePath"
 		if(imagePath == null || imagePath.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
 			return;
 		}
+		
 		File file = new File(imagePath);
-		// copy file to output stream
+		// se esiste, copia il file nella risposta, in modo tale che sia visualizzabile nell'HTML
 		try {
 			Files.copy(file.toPath(), response.getOutputStream());
 		} catch(IOException e) {
@@ -65,15 +63,12 @@ public class GetImage extends HttpServlet {
 		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
 	
-	 public void destroy() {
+	public void destroy() {
 		try {
 			ConnectionHandler.closeConnection(connection);
 		} catch (SQLException e) {

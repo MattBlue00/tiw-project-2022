@@ -14,28 +14,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet Filter implementation class AlbumFilter
+ * Filtro che controlla che l'utente non abbia accesso a pagine relative agli album senza
+ * averlo selezionato regolarmente. Questo filtro è divenuto necessario a seguito della
+ * decisione di salvare in sessione l'album selezionato da un utente.
  */
+
 @WebFilter("/AlbumFilter")
 public class AlbumFilter extends HttpFilter  implements Filter{
 	private static final long serialVersionUID = 1L;
 	
-	/**
-     * @see HttpFilter#HttpFilter()
-     */
     public AlbumFilter() {
         super();
     }
 
-	/**
-	 * @see Filter#destroy()
-	 */
 	public void destroy() {
 	}
 
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
@@ -47,13 +41,10 @@ public class AlbumFilter extends HttpFilter  implements Filter{
 			res.sendRedirect(homePagePath);
 			return;
 		}
-		// pass the request along the filter chain
+		// se l'utente ha regolarmente selezionato un album, la filter chain può proseguire
 		chain.doFilter(request, response);
 	}
 
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
 	public void init(FilterConfig fConfig) throws ServletException {
 	}
 

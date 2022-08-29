@@ -122,7 +122,7 @@
 				<th> </th>
 				<td class="text"><strong>Commento</strong></td></tr>
 				<tr th:each="c : ${commenti}">
-					<td class="text" th:text="${c.owner}">:</td>
+					<td class="text" th:text="${c.author}">:</td>
 					<th> </th>
 					<td class="text" th:text="${c.text}"></td>
 				</tr>

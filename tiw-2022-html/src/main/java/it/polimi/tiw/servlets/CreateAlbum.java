@@ -24,6 +24,10 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
+/**
+ * Servlet che si occupa della creazione di un album.
+ */
+
 @WebServlet("/CreateAlbum")
 public class CreateAlbum extends HttpServlet {
 	
@@ -53,11 +57,15 @@ public class CreateAlbum extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
+		
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("utente");
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		String title = request.getParameter("title");
+		
+		// controllo di integrità del parametro "title"
 		if (title == null || title.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valori mancanti o inesistenti.");
 			return;
@@ -66,11 +74,13 @@ public class CreateAlbum extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito troppo lungo.");
 			return;
 		}
+		
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		Album album = new Album();
 		album.setOwner(user.getUsername());
 		album.setTitle(title);
 		String path;
+		// se il titolo dell'album è unico tra quelli dell'utente, l'album viene creato
 		try {
 			if(albumDao.checkAlbumTitle(album)) {
 				albumDao.createAlbum(album);

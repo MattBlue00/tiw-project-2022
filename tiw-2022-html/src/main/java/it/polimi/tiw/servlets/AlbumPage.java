@@ -28,8 +28,9 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.utils.ConnectionHandler;
 
 /**
- * Servlet implementation class AlbumPage
+ * Servlet che si occupa di caricare correttamente la pagina AlbumPage.
  */
+
 @WebServlet("/AlbumPage")
 public class AlbumPage extends HttpServlet {
 		
@@ -37,14 +38,9 @@ public class AlbumPage extends HttpServlet {
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
 	private static final int MAX_NUM_IMAGES = 5;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-	
+    
     public AlbumPage() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init() throws ServletException {
@@ -57,10 +53,6 @@ public class AlbumPage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
@@ -69,11 +61,10 @@ public class AlbumPage extends HttpServlet {
 		
 		int pageNumber = -1;
 		
-		// entriamo in questo if ogni volta che selezioniamo (clicchiamo) un album
+		// entriamo in questo if ogni volta che selezioniamo (clicchiamo su) un album
 		if(request.getAttribute("titoloAlbum") != null && request.getAttribute("proprietarioAlbum") != null) {
 			String albumTitle, albumOwner;
 			Album album = new Album();
-
 			albumTitle = (String) request.getAttribute("titoloAlbum");
 			albumOwner = (String) request.getAttribute("proprietarioAlbum");
 			album.setOwner(albumOwner);
@@ -81,10 +72,10 @@ public class AlbumPage extends HttpServlet {
 			ctx.setVariable("pageNumber", 1);
 			pageNumber = 1;
 		}
-		
-		// prendiamo il valore di pageNumber
+		// altrimenti prendiamo il valore di pageNumber
 		else {
 			if(request.getParameter("pageNumber") != null) {
+				// controllo di integrità sul parametro "pageNumber"
 				try {
 					pageNumber = Integer.valueOf(request.getParameter("pageNumber"));
 				} catch(NumberFormatException e){
@@ -101,7 +92,8 @@ public class AlbumPage extends HttpServlet {
 			}
 		}
 		
-		if(pageNumber < 1 ) {
+		// se il valore di pageNumber fornito non è valido, la servlet risponde con un errore
+		if(pageNumber < 1) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
 			return;
 		}
@@ -122,16 +114,17 @@ public class AlbumPage extends HttpServlet {
 			return;
 		}
 		
-		// se l'album è vuoto non serve pageNumber
+		// se l'album è vuoto, non serve pageNumber
 		if(albumImages.isEmpty()) {
 			ctx.removeVariable("pageNumber");
 		}
 		
+		// se l'album visualizzato è di proprietà dell'utente, può aggiungervi immagini
 		if(((User) session.getAttribute("utente")).getUsername().equals(album.getOwner())) {
 			ctx.setVariable("addImageAllowed", Boolean.valueOf(true));
 		}
 		
-		// gestione dei button
+		// aggiornamento della variabile pageNumber in base ai bottoni eventualmente premuti
 		if(request.getParameter("buttonValue") != null) {
 			if(((String) request.getParameter("buttonValue")).equalsIgnoreCase("previous")) {
 				pageNumber--;
@@ -148,25 +141,28 @@ public class AlbumPage extends HttpServlet {
 				
 		}
 		
-		// mostriamo 5 immagini alla volta
 		int listLength = albumImages.size();
+		// se il valore di pageNumber fornito non è valido, la servlet risponde con un errore
 		if(Math.ceil((double) listLength / MAX_NUM_IMAGES) < pageNumber && listLength != 0) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
 			return;
 		}
+		// mostriamo 5 immagini alla volta
 		int firstImageIndex = (pageNumber - 1)* MAX_NUM_IMAGES;
 		int lastImageIndex = pageNumber * MAX_NUM_IMAGES;
 		if(listLength > MAX_NUM_IMAGES) {
 			if(lastImageIndex > listLength)
 				lastImageIndex = listLength;
+			// ulteriore controllo di integrità a supporto di possibili manipolazioni di pageNumber
 			try {
-			albumImages = albumImages.subList(firstImageIndex, lastImageIndex);
+				albumImages = albumImages.subList(firstImageIndex, lastImageIndex);
 			} catch(IndexOutOfBoundsException e){
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossibile caricare le immagini.");
 				return;
 			}
 		}
 		
+		// gestione della visualizzazione dei pulsanti "precedenti" e "successive"
 		if(firstImageIndex >= MAX_NUM_IMAGES) {
 			ctx.setVariable("previousButtonNeeded", Boolean.valueOf(true));
 			}
@@ -182,8 +178,8 @@ public class AlbumPage extends HttpServlet {
 		
 		Image image = new Image();
 		
-		// se un'immagine viene selezionata aggiorniamo la pagina con i dettagli dell'immagine 
-		// e con gli eventuali commenti
+		// se un'immagine viene selezionata, aggiorniamo la pagina con i dettagli
+		// dell'immagine e con gli eventuali commenti
 		
 		Integer imageId = null;
 		if(request.getAttribute("imageID") != null) {
@@ -192,6 +188,7 @@ public class AlbumPage extends HttpServlet {
 		}
 		
 		if(request.getParameter("idImmagine") != null) {
+			// controllo di integrità sul parametro "idImmagine"
 			try {
 				imageId = Integer.valueOf(request.getParameter("idImmagine"));
 			}catch(NumberFormatException e) {
@@ -200,6 +197,8 @@ public class AlbumPage extends HttpServlet {
 			}
 		}
 		
+		// se l'espressione booleana contenuta nell'if viene valutata vera, siamo
+		// sicuramente di fronte a un caso di manipolazione della query string
 		if(request.getParameter("titoloImmagine") == null && request.getAttribute("titoloAlbum") == null &&
 				request.getParameter("buttonValue") == null && request.getAttribute("imageID") == null) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri scorretti.");
@@ -207,8 +206,10 @@ public class AlbumPage extends HttpServlet {
 		}
 		
 		List<Integer> checkImageID = null;
+		// si entra nell'if se un'immagine è stata selezionata
 		if(imageId != null ) {
 			ctx.setVariable("imageClicked", Boolean.valueOf(true));
+			// controllo di integrità dei parametri della richiesta
 			try {
 				image = imageDAO.getImageFromId(imageId);
 				checkImageID = imageDAO.getImageIDsFromTitle(album.getOwner(), album.getTitle(), request.getParameter("titoloImmagine"));
@@ -216,6 +217,7 @@ public class AlbumPage extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile caricare l'immagine.");
 				return;
 			}
+			// ulteriore controllo di integrità dei parametri
 			if(image == null || (!image.getImageTitle().equals(request.getParameter("titoloImmagine")) && 
 					request.getAttribute("imageID") == null) ||
 					(!checkImageID.contains(image.getID()) && request.getAttribute("imageID") == null)) {
@@ -240,6 +242,7 @@ public class AlbumPage extends HttpServlet {
 			List<Comment> comments = new ArrayList<Comment>();
 			CommentDAO commentDAO = new CommentDAO(connection);
 			
+			// aggiorniamo la pagina con i commenti appena estratti
 			try {
 				comments = commentDAO.getImageComments(image.getID());
 				ctx.setVariable("commenti", comments);
@@ -249,6 +252,8 @@ public class AlbumPage extends HttpServlet {
 			}
 			
 		}
+		// se l'espressione booleana contenuta nell'if viene valutata vera, siamo
+		// sicuramente di fronte a un caso di manipolazione della query string
 		else if(request.getAttribute("titoloAlbum") == null && request.getParameter("buttonValue") == null &&
 				request.getAttribute("imageID") == null){
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri scorretti.");
@@ -261,10 +266,6 @@ public class AlbumPage extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);

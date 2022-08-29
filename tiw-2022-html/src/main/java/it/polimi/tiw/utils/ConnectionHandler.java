@@ -7,6 +7,10 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 import javax.servlet.UnavailableException;
 
+/**
+ * Classe di utilità che gestisce la comunicazione con il database locale.
+ */
+
 public class ConnectionHandler {
 
 	public static Connection getConnection(ServletContext context) throws UnavailableException {

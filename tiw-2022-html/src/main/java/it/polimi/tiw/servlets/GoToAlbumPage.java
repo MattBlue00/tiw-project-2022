@@ -22,20 +22,19 @@ import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.utils.ConnectionHandler;
 
 /**
- * Servlet implementation class GoToAlbumPage
+ * Servlet che si occupa di redirigere l'utente verso la pagina AlbumPage. Questa servlet si
+ * è resa necessaria a seguito della decisione di salvare in sessione le informazioni relative
+ * all'album cliccato e alla conseguenti neccessità di filtraggio.
  */
+
 @WebServlet("/GoToAlbumPage")
 public class GoToAlbumPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+	
     public GoToAlbumPage() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init() throws ServletException {
@@ -47,11 +46,9 @@ public class GoToAlbumPage extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
 	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
 		String path = "/AlbumPage";
@@ -60,16 +57,22 @@ public class GoToAlbumPage extends HttpServlet {
 		
 		albumTitle = request.getParameter("titoloAlbum");
 		albumOwner = request.getParameter("proprietarioAlbum");
+		
+		// controllo di integrità sui parametri della richiesta
 		if(albumTitle == null || albumOwner ==  null || albumTitle.isEmpty() || albumOwner.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri errati.");
 			return;
 		}
+		
+		// settaggio degli attributi necessari alla prossima servlet chiamata (AlbumPage)
 		request.setAttribute("titoloAlbum", albumTitle);
 		request.setAttribute("proprietarioAlbum", albumOwner);
 		album.setOwner(albumOwner);
 		album.setTitle(albumTitle);
 		AlbumDAO albumDAO = new AlbumDAO(connection);
 		try {
+			// controllo che il titolo fornito esista nel database in caso di manomissione
+			// della query string
 			if(albumDAO.checkAlbumTitle(album)) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album non esistente.");
 				return;
@@ -84,11 +87,8 @@ public class GoToAlbumPage extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 	

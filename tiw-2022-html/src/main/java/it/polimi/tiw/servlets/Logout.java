@@ -9,8 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Servlet che gestisce il logout dell'utente.
+ */
+
 @WebServlet("/Logout")
 public class Logout extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
 	public Logout() {
@@ -21,6 +26,7 @@ public class Logout extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession(false);
+		// invalida la sessione, cancellandone tutto il contenuto
 		if (session != null) {
 			session.invalidate();
 		}

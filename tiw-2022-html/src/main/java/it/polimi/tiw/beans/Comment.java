@@ -1,15 +1,20 @@
 package it.polimi.tiw.beans;
 
+/**
+ * Classe che contiene tutte le informazioni d'interesse relative a un commento. Rispecchia
+ * perfettamente l'analoga tabella del database.
+ */
+
 public class Comment {
 	
-	private String owner;
+	private String author;
 	private int imageId;
 	private int commentNumber;
 	private String text;
 	
-	public String getOwner() { return owner; }
+	public String getAuthor() { return author; }
 	
-	public void setOwner(String owner) { this.owner = owner; }
+	public void setAuthor(String author) { this.author = author; }
 	
 	public int getImageId() { return imageId; }
 	

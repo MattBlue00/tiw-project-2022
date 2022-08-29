@@ -1,5 +1,10 @@
 package it.polimi.tiw.utils;
 
+/**
+ * Classe di utilità che contiene le costanti relative ai limiti agli input testuali dell'utente
+ * decisi in fase di completamento delle specifiche.
+ */
+
 public class Constants {
 	
 	public static final int EMAIL_MAX_DIM = 100;

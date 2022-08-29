@@ -25,18 +25,16 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Constants;
 
 /**
- * Servlet implementation class AddComment
+ * Servlet che si occupa dell'aggiunta di un commento.
  */
+
 @WebServlet("/AddComment")
 public class AddComment extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public AddComment() {
         super();
     }
@@ -51,15 +49,16 @@ public class AddComment extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
 		ImageDAO imageDAO = new ImageDAO(connection);
 		int idLimit;
 		
+		/* 
+		 * Qualsiasi ID immagine eventualmente fornito uguale o superiore a idLimit 
+		 * corrisponderà a un'immagine non esistente.
+		 */
 		try {
 			idLimit = imageDAO.getImageID();
 		} catch(SQLException e) {
@@ -67,6 +66,7 @@ public class AddComment extends HttpServlet {
 			return;
 		}
 		
+		// controllo di integrità sul parametro "commentText"
 		String commentText = request.getParameter("commentText");
 		if(commentText == null || commentText.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Valore inserito mancante o inesistente.");
@@ -77,6 +77,7 @@ public class AddComment extends HttpServlet {
 			return;
 		}
 		
+		// controllo di integrità sul parametro "id_immagine"
 		try {
 			if(request.getParameter("id_immagine") == null || Integer.valueOf(request.getParameter("id_immagine")) < 1 ||
 					Integer.valueOf(request.getParameter("id_immagine")) >= idLimit) {
@@ -88,10 +89,11 @@ public class AddComment extends HttpServlet {
 			return;
 		}
 		
+		// salvataggio del commento nel database
 		Comment comment = new Comment();
 		User user = (User) session.getAttribute("utente");
 		comment.setImageId(Integer.valueOf(request.getParameter("id_immagine")));
-		comment.setOwner(user.getUsername());
+		comment.setAuthor(user.getUsername());
 		comment.setText(commentText);
 		CommentDAO commentDAO = new CommentDAO(connection);
 		try {
@@ -101,8 +103,10 @@ public class AddComment extends HttpServlet {
 			return;
 		}
 		
+		// redirezione alla Servlet "AlbumPage" per l'aggiornamento dei dati della pagina
 		String path = "/AlbumPage";
 		request.setAttribute("imageID", Integer.valueOf(request.getParameter("id_immagine")));
+		// controllo di integrità sul parametro "pageNuber"
 		try {
 			request.setAttribute("pageNumber", Integer.valueOf(request.getParameter("pageNumber")));
 		} catch(NumberFormatException | NullPointerException e) {
@@ -113,9 +117,6 @@ public class AddComment extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
