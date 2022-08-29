@@ -107,12 +107,13 @@
 	margin-top: 50px;
 }
 #imagesTable{
+	border-spacing: 16px;
 	border-collapse:separate;
     border-radius:6px;
     margin-left: auto;
   	margin-right: auto;
   	border: 1px solid #469fd3; 
-	padding: 8px;
+	padding: 12px;
 	background-color: white;
 	vertical-align:middle;
 } 
