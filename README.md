@@ -1,4 +1,4 @@
-# Progetto di Tecnologie Informatiche per il Web - AA 2022/2023
+# Progetto di Tecnologie Informatiche per il Web - AA 2021/2022
 
 ## Galleria di immagini - Prima Traccia
 
