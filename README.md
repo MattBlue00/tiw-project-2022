@@ -18,6 +18,11 @@ Si realizzi un’applicazione client server web che modifica le specifiche prece
 - Errori a lato server devono essere segnalati mediante un messaggio di allerta all’interno della pagina.
 - Si deve consentire all’utente di riordinare l’elenco dei propri album con un criterio diverso da quello di default (data decrescente). L’utente trascina il titolo di un album nell’elenco e lo colloca in una posizione diversa per realizzare l’ordinamento che desidera, senza invocare il server. Quando l’utente ha raggiunto l’ordinamento desiderato, usa un bottone “salva ordinamento”, per memorizzare la sequenza sul server. Ai successivi accessi, l’ordinamento personalizzato è usato al posto di quello di default.
 
+### Componenti del gruppo
+
+- [__Matteo Spreafico__](https://github.com/MattBlue00)
+- [__Ludovica Tassini__](https://github.com/LudoTassini)
+
 ### Note
 
 Il progetto è stato valutato con un punteggio di 28/30. Gli errori segnalati dal professore durante l'esame orale sono stati corretti nella versione qui caricata.
