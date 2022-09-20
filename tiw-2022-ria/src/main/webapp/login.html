@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="utf-8">
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css"/>
+	<script src="Utils.js" charset="utf-8" defer></script>
+	<script src="LoginHandler.js" charset="utf-8" defer></script>
+	<script src="RegistrationHandler.js" charset="utf-8" defer></script>
+</head>
+<body>
+	<div class="divLogin" align="center">
+		<h1 class="welcomeText" align="center">GALLERIA IMMAGINI</h1>
+		<form action="#">
+			<fieldset>
+				<legend>Accedi all'applicazione</legend>
+				<table class=loginTable>
+					<tr>
+						<td><input type="text" id="username" name="username" class="input" placeholder="username" maxlength="20" required></td>
+					</tr>
+					<tr>
+						<td><input type="password" id="passwordLogin" name="passwordLogin" class="input" placeholder="password" maxlength="20" required></td>
+					</tr>
+					<tr>			
+						<td><input id="loginButton" type="button" class="button" value="Login"></td>
+					</tr>
+				</table>
+				<br>
+				<p id="errorMsgLogin" class="error" hidden="true"></p>
+			</fieldset>
+		</form>
+	</div>
+	
+	<br>
+
+    <div class="divRegister" align="center">
+        <form action="#">
+	        <fieldset>
+	        	<legend>Nuovo utente? Registrati qui!</legend>
+				<table class=registerTable>
+					<tr>
+						<td><input type="email" id="email" name="email" class="input" placeholder="email" maxlength="100" required></td>
+					</tr>
+	                <tr>
+						<td><input type="text" id="username" name="username" class="input" placeholder="username" maxlength="20" required></td>
+					</tr>
+					<tr>
+						<td><input type="password" id="password" name="password" class="input" placeholder="password" maxlength="20" required></td>
+					</tr>
+	                <tr>
+						<td><input type="password" id="passwordRepeated" name="passwordRepeated" class="input" placeholder="ripeti password" maxlength="20" required></td>
+					</tr>
+					<tr>			
+						<td><input id="registrationButton" type="button" class="button" value="Registrati"></td>
+					</tr>
+				</table>
+				<br>
+				<p id="successMsgRegistration" class="success" hidden="true"></p>
+				<p id="errorMsgRegistration" class="error" hidden="true"></p>
+			</fieldset>
+		</form>
+    </div>
+    
+    <br>
+    
+</body>
+</html>

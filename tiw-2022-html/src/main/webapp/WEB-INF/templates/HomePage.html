@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Home</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+
+	<div align="right">
+		<form name="logout" method="POST" action="Logout">
+			<label>
+		  		<input type="submit" value="Logout" id="logoutButton" class="button">
+		  	</label>
+		</form>
+	</div>
+	
+	<div align="center">
+		<h1 class="welcomeText">Benvenuto nella galleria immagini, <span id="personalMessage" th:text="${session.utente.username}"></span></h1>
+		<h3 class="pageText">Visualizza i tuoi album</h3>
+	</div>
+	
+	<div align="center" class="container">
+		<div class="sub_container">
+			<p class="emptyListMessage" th:if = "${#lists.isEmpty(userAlbums)}">Non hai ancora caricato nessun album.</p> 
+			<table id="myAlbumsContainer" th:if = "${not #lists.isEmpty(userAlbums)}" >  <!-- class="albumList" -->
+				<thead>
+					<tr>
+						<th>Titolo </th>
+						<th>Data creazione </th>
+					</tr>
+				</thead>
+				<tr th:each="a : ${userAlbums}">
+					<td class="album" >
+						<a th:href="@{GoToAlbumPage(titoloAlbum=${a.title}, proprietarioAlbum=${a.owner})}" th:text="${a.title}">titolo</a>
+					</td>
+					<td class="albumCreationDate">
+						<span th:text="${a.creationDate}">data creazione</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+		
+	<br><br>	
+	
+	<div align="center">
+		<form name="CreateAlbum" method="POST" action="CreateAlbum">
+			<fieldset>
+				<legend>Crea un nuovo album</legend>
+				<input type="text" id="newAlbumTitle" name="title" class="input" placeholder="titolo album" maxlength=30 required/>
+				<input type="submit" id="createAlbumButton" class="button" value="Crea">
+				<span id="createAlbumError" class="error" th:text="${errorMsg}"></span>
+			</fieldset>
+		</form>
+	</div>
+		
+	<h3 class="pageText">Visualizza gli album degli altri utenti</h3>
+	<div align="center" class="container">
+		<div class="sub_container">
+			<p class="emptyListMessage" th:if = "${#lists.isEmpty(otherAlbums)}">Gli altri utenti non hanno ancora caricato nessun album.</p>
+			<table id="otherAlbumsContainer" class="albumList" th:if = "${not #lists.isEmpty(otherAlbums)}">
+				<thead>
+					<tr>
+						<th>Titolo </th>
+						<th>Utente </th>
+						<th>Data creazione </th>
+					</tr>
+				</thead>
+			<tr th:each="a : ${otherAlbums}">
+				<td class="albumTitle">
+					<a th:href="@{/GoToAlbumPage(titoloAlbum=${a.title}, proprietarioAlbum=${a.owner})}" th:text="${a.title}">titolo</a>
+				</td>
+				<td class="albumOwner">
+					<span th:text="${a.owner}">utente</span>
+				</td>
+				<td class="albumCreationDate">
+					<span th:text="${a.creationDate}">data creazione</span>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

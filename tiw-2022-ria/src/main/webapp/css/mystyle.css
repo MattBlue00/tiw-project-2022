@@ -1,0 +1,220 @@
+@charset "UTF-8";
+.button{
+	background-color: #469fd3; /* Light blue */
+  	border: none;
+  	color: white;
+  	padding: 12px 32px;
+  	text-align: center;
+  	text-decoration: none;
+  	display: inline-block;
+  	font-size: 16px;
+  	border-radius: 12px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+.button:hover {
+  	background-color: #FFFFFF; /* White */
+  	color: #469fd3;
+  	padding: 10px 30px;
+  	border: 2px solid #469fd3; /* Light blue */
+  	cursor: pointer;
+}
+.input{
+	width: 100%;
+  	padding: 12px 20px;
+  	margin: 6px 0;
+  	box-sizing: border-box;
+  	font-size: 14px;
+}
+.loginTable, .registerTable{
+	margin-left: auto;
+  	margin-right: auto;
+}
+.welcomeText{
+	padding: 20px 20px 10px 20px;
+  	text-align: center;
+  	color: #469fd3;
+  	font-size: 50px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+.pageText, #albumDetailsHeader{
+	padding: 10px 10px 5px 10px;
+  	text-align: center;
+  	color: #469fd3;
+  	font-size: 30px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+.error{
+	width: 40%;
+  	text-align: center;
+	color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url(resources/ErrorImage.png);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	border: 1px solid;
+	margin: auto;
+	padding: 15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+  	border-radius: 6px;
+}
+.success{
+	width: 40%;
+  	text-align: center;
+	color: #4F8A10;
+	background-color: #DFF2BF;
+	background-image: url(resources/SuccessImage.png);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	border: 1px solid;
+	margin: auto;
+	padding: 15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+  	border-radius: 6px;
+}
+.warning{
+	width: 40%;
+  	text-align: center;
+	color: #9F6000;
+	background-color: #FEEFB3;
+	background-image: url(resources/WarningImage.png);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	border: 1px solid;
+	margin: auto;
+	padding: 15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+  	border-radius: 6px;
+}
+.modal {
+  	display: none; /* Hidden by default */
+  	position: fixed; /* Stay in place */
+  	z-index: 1; /* Sit on top */
+  	left: 0;
+  	top: 0;
+  	width: 100%; /* Full width */
+  	height: 100%; /* Full height */
+  	overflow: auto; /* Enable scroll if needed */
+  	background-color: rgb(0,0,0); /* Fallback color */
+  	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modalContent {
+  	background-color: #fefefe;
+  	margin: 15% auto; /* 15% from the top and centered */
+  	padding: 20px;
+  	border: 1px solid #888;
+  	width: 80%;
+  	border-radius: 12px;
+}
+.selected{
+	background-color: #469fd3;
+}
+.notselected{
+	background-color: #fefefe;
+}
+#loginButton, #registrationButton{
+	margin: auto;
+}
+#myAlbumsContainer td, #myAlbumsContainer th, #otherAlbumsContainer td, #otherAlbumsContainer th{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+  	border: 1px solid #ddd;
+  	padding: 8px;
+}
+#myAlbumsContainer tr:hover, #otherAlbumsContainer tr:hover{
+	background-color: #ddd;
+}
+#myAlbumsContainer th, #otherAlbumsContainer th{
+  	padding-top: 12px;
+  	padding-bottom: 12px;
+  	text-align: center;
+  	background-color: #469fd3;
+  	color: white;
+}
+#saveOrderSuccess, #saveOrderError{
+	width: 20%;
+}
+#previousButton{
+	position: absolute;
+	top: auto;
+	bottom: auto;
+	left: 6px;
+}
+#nextButton{
+	position: absolute;
+	top: auto;
+	bottom: auto;
+	right: 6px;
+}
+#imageDetails {
+	text-align: center;
+	width: 100%;
+  	padding-top: 20px;
+  	padding: 20px 150px 20px 150px;
+  	background-color: #469fd3;
+  	color: white;
+  	font-size: 30px;
+  	font-family: Arial, Helvetica, sans-serif;
+  	font-weight: bold;
+	margin: auto;
+	border-radius: 0px 0px 12px 12px;
+}
+#imageDetailsTable{
+	max-width: 60%;
+	display: block;
+	border-collapse: separate;
+    border-radius: 6px;
+  	border: 1px solid #469fd3;
+	padding: 8px;
+	background-color: white;
+  	font-size: 16px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+#commentsContainer{
+	display: block;
+	text-align: left;
+}
+fieldset {
+  	text-align: center;
+	border: 1px solid #469fd3;
+	width: 40%;
+	background: white;
+	padding: 6px;
+  	border-radius: 12px;
+  	font-size: 16px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+fieldset legend {
+	border: 1px solid #469fd3;
+	background: white;
+	padding: 6px;
+	font-weight: bold;
+	text-align: center;
+  	color: #469fd3;
+  	font-size: 20px;
+  	font-family: Arial, Helvetica, sans-serif;
+  	border-radius: 6px;
+}
+textarea {
+  	width: 100%;
+  	height: 150px;
+  	padding: 12px 20px;
+  	box-sizing: border-box;
+  	border: 1px solid #ccc;
+  	border-radius: 4px;
+  	background-color: #ffffff;
+  	resize: none;
+  	font-size: 14px;
+  	font-family: Arial, Helvetica, sans-serif;
+}
+#imageThumbnailsFieldset{
+	width: 1%;
+}
+#imageThumbnailsContainer{
+	border-spacing: 16px;
+}
+#fullScaleImage{
+ 	width: 90%;
+ }

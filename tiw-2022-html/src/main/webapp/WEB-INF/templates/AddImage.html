@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Crea un nuovo album</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../css/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+
+	<div align="right">
+	 	<form id="logout" method="POST" action="Logout">
+	 		<label class="logoutButton">
+	 			<input type="submit" value="Logout" class="button">
+	 		</label>
+		</form>
+	</div>
+	
+	<br>
+
+	<div id="addImageContainer" align="center">
+		<fieldset> 
+			<legend>Aggiungi immagini all'album</legend>
+			<form action="AddImage" method="POST" enctype="multipart/form-data">
+				<table class=addImageTable>
+					<tr>
+						<td><input type="file" name="image" placeholder="immagine" accept="image/*" class="button" required ></td>
+					</tr>
+					<tr>
+						<td><input class="input" type="text" name="imageTitle" placeholder="titolo immagine" maxlength="30" required ></td>
+					</tr>
+					<tr>
+						<td>
+						<textarea name="imageDescription" rows="4" cols="50" placeholder="Descrivi qui la tua immagine." maxlength="280" required ></textarea>
+						</td>
+					</tr>
+					<tr>			
+						<td th:text="${successMsg}" id="addImageSuccess" class="success"> </td>
+					</tr>
+					<tr>			
+						<td><input type="submit" value="Aggiungi immagine" class="button"></td>
+					</tr>
+				</table>
+				<br>
+			</form>
+		</fieldset>
+	</div>
+	
+	<br>
+
+	<div class="stopCreatingAlbum" align="center">
+		<form action="HomePage" method="POST" id="homePage" >
+			<label class="goToHomePageButton">
+	  			<input type="submit" value="Concludi e torna alla home page" class="button">
+	  		</label>
+		</form>
+	</div>
+
+</body>
+</html>
