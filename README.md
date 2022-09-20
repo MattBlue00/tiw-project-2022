@@ -35,3 +35,5 @@ Il progetto ha previsto anche la consegna di una [documentazione](Documentazione
 ### Note
 
 Il progetto è stato valutato con un punteggio di 28/30. Gli errori segnalati dal professore durante l'esame orale sono stati corretti nella versione qui caricata.
+
+Se si desiderasse avere un'anteprima del progetto senza installare i file sorgente su un server, si consultino queste [immagini](immagini_dimostrative).
