@@ -23,6 +23,15 @@ Si realizzi un’applicazione client server web che modifica le specifiche prece
 - [__Matteo Spreafico__](https://github.com/MattBlue00)
 - [__Ludovica Tassini__](https://github.com/LudoTassini)
 
+### Documentazione
+
+Il progetto ha previsto anche la consegna di una [documentazione](Documentazione_pdf.pdf) contenente, oltre alla specifica: 
+- completamento delle specifiche
+- funzionalità aggiuntive
+- progettazione database e diagramma ER
+- progettazione applicativo (diagramma IFML)
+- sequence diagrams relativi agli eventi principali
+
 ### Note
 
 Il progetto è stato valutato con un punteggio di 28/30. Gli errori segnalati dal professore durante l'esame orale sono stati corretti nella versione qui caricata.
